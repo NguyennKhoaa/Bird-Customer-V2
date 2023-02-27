@@ -43,12 +43,21 @@ export default function Login({ formik }: ILoginForm) {
     <div
       className="h-screen bg-cover bg-contain bg-center"
       style={{
-        backgroundImage: `url('https://file.vfo.vn/hinh/2018/02/chim-chao-mao-hinh-anh-hinh-nen-chim-chao-mao-dep-nhat-22.png')`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "100% 100%",
+        backgroundImage: `url('https://static.tuoitre.vn/tto/i/s626/2015/11/25/chim-boi-ca-01-1448445719.jpg')`,
         // chỉnh kích thước ảnh nền nhỏ lại phù hợp với màn hình
       }}
     >
       <div className="container">
-        <div className="grid grid-cols-1 py-12 lg:grid-cols-5 lg:py-32 lg:pr-10">
+        <div
+          className="grid grid-cols-1 py-12 lg:grid-cols-5 lg:py-32 lg:pr-10"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginLeft: "280px",
+          }}
+        >
           <div className="lg:col-span-2 lg:col-start-4">
             <form
               className="rounded bg-white p-10 shadow-sm"

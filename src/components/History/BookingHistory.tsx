@@ -18,6 +18,8 @@ import Iframe from "react-iframe";
 import styled from "@emotion/styled";
 import Appbar from "../Appbar/Appbar";
 import { Chip } from "@mui/material";
+import AssessmentIcon from "@mui/icons-material/Assessment";
+import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 
 const LabelStyle = styled(Typography)(() => ({
   color: "green",
@@ -93,6 +95,10 @@ function Row(props: { row: Data }) {
                 row.status === "accepted" ? "rgb(162, 252, 162)" : "red",
             }}
           />
+        </TableCell>
+        <TableCell align="right">
+          <AssessmentIcon />
+          <RequestQuoteIcon />
         </TableCell>
       </TableRow>
       <TableRow>
@@ -181,6 +187,9 @@ export default function HistoryBooking() {
               </TableCell>
               <TableCell style={{ fontWeight: "bold" }} align="right">
                 Status
+              </TableCell>
+              <TableCell style={{ fontWeight: "bold" }} align="right">
+                Action
               </TableCell>
             </TableRow>
           </TableHead>
