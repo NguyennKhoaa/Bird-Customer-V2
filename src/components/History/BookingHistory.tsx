@@ -17,14 +17,36 @@ import Footer from "../Footer/Footer";
 import Iframe from "react-iframe";
 import styled from "@emotion/styled";
 import Appbar from "../Appbar/Appbar";
-import { Chip } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Chip,
+  Container,
+  Modal,
+} from "@mui/material";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
+import Report from "../report/Report";
+import HoaDon from "./HoaDon";
 
 const LabelStyle = styled(Typography)(() => ({
   color: "green",
   marginBottom: "8px",
 }));
+
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 function createData(
   name: string,
@@ -67,6 +89,10 @@ interface Data {
 function Row(props: { row: Data }) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
+  const [openModal, setOpenModal] = React.useState(false);
+
+  const handleOpen = () => setOpenModal(true);
+  const handleClose = () => setOpenModal(false);
 
   return (
     <React.Fragment>
@@ -96,9 +122,28 @@ function Row(props: { row: Data }) {
             }}
           />
         </TableCell>
-        <TableCell align="right">
-          <AssessmentIcon />
-          <RequestQuoteIcon />
+        <TableCell align="right" sx={{ display: "flex", marginTop: "8px" }}>
+          {/* <Button onClick={handleOpen}> */}
+          <AssessmentIcon onClick={handleOpen} />
+          {/* </Button> */}
+
+          <HoaDon id={row.bookingId}/>
+          <Modal
+            open={openModal}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style} style={{ width: "50%" }}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Thôn tin Report
+              </Typography>
+              <Report />
+              {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+              </Typography> */}
+            </Box>
+          </Modal>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -120,7 +165,6 @@ function Row(props: { row: Data }) {
                     <TableCell style={{ fontWeight: "bold" }} align="right">
                       Amount
                     </TableCell>
-                    {/* <TableCell align="right">Total price ($)</TableCell> */}
                   </TableRow>
                 </TableHead>
                 <TableBody>

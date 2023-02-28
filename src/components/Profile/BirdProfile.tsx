@@ -11,7 +11,19 @@ import axios from "axios";
 import Appbar from "../Appbar/Appbar";
 import Iframe from "react-iframe";
 import Footer from "../Footer/Footer";
-import { Chip, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  ButtonBase,
+  Chip,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
+import Modal from "@mui/material/Modal";
+import UploadAvatar from "./uploadAvatar";
+import { toast } from "react-toastify";
+import { useFormik } from "formik";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -60,9 +72,28 @@ interface Data {
   status: string;
 }
 
+interface AddProfile {
+  name: string;
+  imageUrl: string;
+  type: string;
+  description: string;
+  accountId: number;
+}
+
 interface IBirdProfile {
   data: Data[];
 }
+const style = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 const LabelStyle = styled(Typography)(() => ({
   color: "green",
@@ -71,6 +102,10 @@ const LabelStyle = styled(Typography)(() => ({
 
 export default function BirdProfile() {
   const [data, setData] = React.useState<IBirdProfile>();
+  const [open, setOpen] = React.useState(false);
+  const [avatar, setAvatar] = React.useState("");
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   React.useEffect(() => {
     axios({
       method: "GET",
@@ -83,20 +118,174 @@ export default function BirdProfile() {
         console.log(err);
       });
   }, []);
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      imageUrl: "",
+      type: "",
+      description: "",
+      accountId: 1,
+    },
+    // validationSchema: schemaLogin,
+    validateOnMount: true,
+    validateOnBlur: true,
+    onSubmit: (values: AddProfile) => {
+      axios({
+        method: "POST",
+        url: "https://swpbirdboardingv1.azurewebsites.net/api/Home/CreateBirdProfile",
+        data: values,
+      })
+        .then((rs) => {
+          console.log(rs);
+          toast("🦄 Add Success", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+  });
   return (
     <>
       <Appbar />
-      <LabelStyle
-        style={{
-          color: "black",
-          fontWeight: "bold",
-          fontSize: "30px",
-          marginTop: "50px",
-          paddingLeft: "24px",
-        }}
-      >
-        Thông tin chim{" "}
-      </LabelStyle>
+      <Box sx={{ display: "flex", marginBottom: "20px" }}>
+        <LabelStyle
+          style={{
+            color: "black",
+            fontWeight: "bold",
+            fontSize: "30px",
+            marginTop: "50px",
+            paddingLeft: "24px",
+          }}
+        >
+          Thông tin chim{" "}
+        </LabelStyle>
+
+        <Button
+          onClick={handleOpen}
+          variant="contained"
+          sx={{ marginTop: "50px", marginLeft: "1069px" }}
+        >
+          Add
+        </Button>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style} style={{ width: "50%" }}>
+            <Typography
+              sx={{ marginBottom: "15px" }}
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+            >
+              Thêm thông tin chim
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item>
+                <ButtonBase sx={{ width: 128, height: 128, marginTop: "20px" }}>
+                  <UploadAvatar
+                    height={140}
+                    width={140}
+                    onChange={(
+                      event: React.ChangeEvent<HTMLInputElement>
+                    ): void => {
+                      const { name } = event.target;
+                      if (!event.target.files) return;
+                      console.log(event.target.files[0]);
+
+                      formik.setFieldValue(name, event.target.files[0]);
+                      setAvatar(URL.createObjectURL(event.target.files[0]));
+                    }}
+                    image={avatar}
+                    name="avatar"
+                  />
+                </ButtonBase>
+              </Grid>
+              <Grid item xs={12} sm container>
+                <Grid item xs container direction="column" spacing={2}>
+                  <form
+                    className="rounded bg-white p-10 shadow-sm"
+                    onSubmit={formik.handleSubmit}
+                    noValidate
+                  >
+                    <Grid item xs>
+                      <Typography
+                        gutterBottom
+                        variant="subtitle1"
+                        component="div"
+                      >
+                        Tên chim
+                      </Typography>
+                      <TextField
+                        onBlur={formik.handleBlur}
+                        name="name"
+                        fullWidth
+                        value={formik.values.name}
+                        onChange={formik.handleChange}
+                      />
+
+                      <Typography
+                        gutterBottom
+                        variant="subtitle1"
+                        component="div"
+                      >
+                        Thể loại
+                      </Typography>
+                      <TextField
+                        onBlur={formik.handleBlur}
+                        name="type"
+                        fullWidth
+                        value={formik.values.type}
+                        onChange={formik.handleChange}
+                      />
+
+                      <Typography
+                        gutterBottom
+                        variant="subtitle1"
+                        component="div"
+                      >
+                        Mô tả
+                      </Typography>
+                      <TextField
+                        onBlur={formik.handleBlur}
+                        name="description"
+                        multiline
+                        minRows={10}
+                        maxRows={9}
+                        style={{ width: "100%" }}
+                        value={formik.values.description}
+                        onChange={formik.handleChange}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <Button
+                        sx={{ marginTop: "15px" }}
+                        type="submit"
+                        variant="contained"
+                      >
+                        Cập nhật
+                      </Button>
+                    </Grid>
+                  </form>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Box>
+        </Modal>
+      </Box>
+
       <TableContainer
         component={Paper}
         style={{ width: "90%", marginLeft: "70px" }}
@@ -129,9 +318,7 @@ export default function BirdProfile() {
                       width: "100px",
                       fontWeight: "bold",
                       backgroundColor:
-                        row.status === "active"
-                          ? "rgb(162, 252, 162)"
-                          : "red",
+                        row.status === "active" ? "rgb(162, 252, 162)" : "red",
                     }}
                   />
                 </StyledTableCell>
