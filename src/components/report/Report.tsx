@@ -13,6 +13,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Iframe from "react-iframe";
 import axios from "axios";
+import CommentBox from "./Comment";
 
 interface Data {
   id: number;
@@ -50,6 +51,10 @@ export default function Report() {
       prev.map((isOpen, i) => (i === index ? !isOpen : isOpen))
     );
   };
+  const handleSubmitComment = (comment: string) => {
+    // Xử lý nội dung comment được gửi lên server ở đây
+    console.log(`Comment submitted: ${comment}`);
+  };
 
   return (
     <div style={{ height: "600px", overflowY: "scroll" }}>
@@ -65,7 +70,7 @@ export default function Report() {
             }}
           >
             <CardHeader
-              title={item.date.split('T')[0]}
+              title={item.date.split("T")[0]}
               action={
                 <IconButton
                   onClick={() => handleCardClick(index)}
@@ -78,7 +83,7 @@ export default function Report() {
             ></CardHeader>
             <div style={{ backgroundColor: "rgba(211,211,211,0.4)" }}>
               <Collapse in={isOpen} timeout="auto" unmountOnExit>
-                <CardContent style={{ height: "500px" }}>
+                <CardContent style={{ height: "600px" }}>
                   <Container sx={{ height: 36, lineHeight: 2 }}>
                     <Typography
                       sx={{ fontWeight: "bold", marginBottom: "20px" }}
@@ -86,7 +91,7 @@ export default function Report() {
                       {item.description}
                     </Typography>
                     <Iframe
-                      url="https://www.sdrive.app/embed/1ptBQD"
+                      url="https://www.youtube.com/embed/6R8C8BSdMds"
                       width="640px"
                       height="320px"
                       id=""
@@ -116,8 +121,15 @@ export default function Report() {
                       <Typography
                         sx={{ marginTop: "20px", marginLeft: "10px" }}
                       >
-                        Hello
+                        {item.messageCustomer}
                       </Typography>
+                    </Box>
+
+                    <Box>
+                      <CommentBox
+                        id={item.id}
+                        onSubmitComment={handleSubmitComment}
+                      />
                     </Box>
                   </Container>
                 </CardContent>
