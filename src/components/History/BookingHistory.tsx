@@ -127,7 +127,7 @@ function Row(props: { row: Data }) {
           <AssessmentIcon onClick={handleOpen} />
           {/* </Button> */}
 
-          <HoaDon id={row.bookingId}/>
+          <HoaDon id={row.bookingId} />
           <Modal
             open={openModal}
             onClose={handleClose}
@@ -136,9 +136,9 @@ function Row(props: { row: Data }) {
           >
             <Box sx={style} style={{ width: "50%" }}>
               <Typography id="modal-modal-title" variant="h6" component="h2">
-                Thôn tin Report
+                Thông tin Report
               </Typography>
-              <Report />
+              <Report id={row.bookingId} />
               {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                 Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
               </Typography> */}

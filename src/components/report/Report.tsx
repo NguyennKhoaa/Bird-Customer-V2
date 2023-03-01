@@ -28,14 +28,14 @@ interface IReport {
   data: Data[];
 }
 
-export default function Report() {
+export default function Report({ id }: { id: number }) {
   const [openCards, setOpenCards] = useState<boolean[]>([]);
   const [data, setData] = useState<IReport>();
 
   useEffect(() => {
     axios({
       method: "GET",
-      url: "https://swpbirdboardingv1.azurewebsites.net/api/Bookings/GetBookingReportList?bookingid=1&pagesize=50&pagenumber=1",
+      url: `https://swpbirdboardingv1.azurewebsites.net/api/Bookings/GetBookingReportList?bookingid=${id}&pagesize=50&pagenumber=1`,
     })
       .then((rs) => {
         setData(rs.data);
@@ -44,7 +44,7 @@ export default function Report() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [id]);
 
   const handleCardClick = (index: number) => {
     setOpenCards((prev) =>
