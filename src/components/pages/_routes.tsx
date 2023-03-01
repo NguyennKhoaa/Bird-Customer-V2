@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes } from "react-router";
 import { BrowserRouter, Route } from "react-router-dom";
+import Bug from "../Bugs/Bug";
 import HomeCustome from "../Carousel/HomeCustome";
 import ProductNewForm from "../CreateTK/ProductNewForm";
 import Dashboard from "../Dashboard/Dashboard";
@@ -24,13 +25,14 @@ const Router = (): JSX.Element => {
       <Route path="/taotaikhoan" element={<ProductNewForm />} /> */}
       {/* <Route path="/" element={<BirdProfile />}></Route> */}
       {/* <Route path="/" element={<UserList />}></Route> */}
-      <Route path="/" element={<LoginPage />}></Route>
+      {/* <Route path="/" element={<LoginPage />}></Route>
       <Route path="/home" element={<HomeCustome />}></Route>
       <Route path="/home/result" element={<KetQua />}></Route>
       <Route path="/home/result/about" element={<About />}></Route>
       <Route path="/profile" element={<Profile />}></Route>
       <Route path="/profile/bird" element={<BirdProfile />}></Route>
-      <Route path="/history" element={<HistoryBooking />}></Route>
+      <Route path="/history" element={<HistoryBooking />}></Route> */}
+      <Route path="/" element={<Bug />}></Route>
       {/* <Route path="/taotaikhoan" element={<ProductNewForm />} /> */}
     </Routes>
     // </BrowserRouter>
