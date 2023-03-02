@@ -4,6 +4,7 @@ import restAPI, { RestClient } from "../config/axios";
 import { toast } from "react-toastify";
 
 const fetchLoginAction = "auth/fetchLogin";
+const fetchSignupAction = "auth/fetchSignup";
 
 export interface BaseError {
   statusCode: number;
@@ -19,6 +20,11 @@ export interface ResultPayload {
   role: string;
 }
 
+export interface ResultSignupPayload {
+  statusCode: number;
+  message: string;
+}
+
 export const fetchLogin = async (
   restAPI: RestClient,
   payload: LoginRequestPayload
@@ -31,9 +37,29 @@ export const fetchLogin = async (
   // localStorage.setItem("accountId");
 };
 
+export const fetchSignup = async (
+  restAPI: RestClient,
+  payload: SignupRequestPayload
+): Promise<ResultSignupPayload> => {
+  let url = "";
+  url =
+    "https://swpbirdboardingv1.azurewebsites.net/api/v1/Accounts/CreateAccountMember";
+  const response = await restAPI.post<ResultSignupPayload>(url, payload);
+  return response.data;
+};
+
 export interface LoginRequestPayload {
   email: string;
   password: string;
+}
+
+export interface SignupRequestPayload {
+  imageUrl: string;
+  email: string;
+  password: string;
+  fullName: string;
+  telephone: string;
+  address: string;
 }
 
 export const fetchLoginAsync = createAsyncThunk(
@@ -58,6 +84,37 @@ export const fetchLoginAsync = createAsyncThunk(
         progress: undefined,
         theme: "light",
       });
+      return response;
+    } catch (error) {
+      console.log(error);
+
+      return rejectWithValue(error as BaseError);
+    }
+  }
+);
+
+export const fetchSignupAsync = createAsyncThunk(
+  fetchSignupAction,
+  async (
+    {
+      payload,
+      navigate,
+    }: { payload: SignupRequestPayload; navigate: NavigateFunction },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response: ResultSignupPayload = await fetchSignup(restAPI, payload);
+      navigate("/code");
+      // toast("🦄 Login Success", {
+      //   position: "top-right",
+      //   autoClose: 5000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: "light",
+      // });
       return response;
     } catch (error) {
       console.log(error);

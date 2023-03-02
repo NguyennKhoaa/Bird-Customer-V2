@@ -70,7 +70,7 @@ export default function Report({ id }: { id: number }) {
             }}
           >
             <CardHeader
-              title={item.date.split("T")[0]}
+              title={item.date?.toString().split("T")[0]}
               action={
                 <IconButton
                   onClick={() => handleCardClick(index)}

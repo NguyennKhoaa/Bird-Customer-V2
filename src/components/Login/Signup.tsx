@@ -1,30 +1,27 @@
-import { Link, useNavigate } from "react-router-dom";
+import { IconButton, InputAdornment, OutlinedInput } from "@mui/material";
+import React, { useState } from "react";
 import TextFieldCustoms from "../Profile/TextFieldCustoms";
-import { FormikProps } from "formik";
-import {
-  IconButton,
-  InputAdornment,
-  OutlinedInput,
-  Typography,
-} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useState } from "react";
-
-interface ILogin {
-  email: string;
-  password: string;
-}
-
-interface ILoginForm {
-  formik: FormikProps<ILogin>;
-}
+import { FormikProps } from "formik";
 
 interface IState {
   showPassword: boolean;
 }
 
-export default function Login({ formik }: ILoginForm) {
-  // const navigate = useNavigate();
+interface ISignup {
+  email: string;
+  password: string;
+  fullName: string;
+  telephone: string;
+  address: string;
+  imageUrl: string;
+}
+
+interface ISignupForm {
+  formik: FormikProps<ISignup>;
+}
+
+export default function Signup({ formik }: ISignupForm) {
   const [value, setValue] = useState<IState>({
     showPassword: false,
   });
@@ -51,6 +48,7 @@ export default function Login({ formik }: ILoginForm) {
         backgroundRepeat: "no-repeat",
         backgroundSize: "100% 100%",
         backgroundImage: `url('https://static.tuoitre.vn/tto/i/s626/2015/11/25/chim-boi-ca-01-1448445719.jpg')`,
+        overflowY: "hidden",
         // chỉnh kích thước ảnh nền nhỏ lại phù hợp với màn hình
       }}
     >
@@ -63,7 +61,10 @@ export default function Login({ formik }: ILoginForm) {
             marginLeft: "280px",
           }}
         >
-          <div className="lg:col-span-2 lg:col-start-4">
+          <div
+            className="lg:col-span-2 lg:col-start-4"
+            style={{ width: "700px", marginTop: "-60px" }}
+          >
             <form
               className="rounded bg-white p-10 shadow-sm"
               onSubmit={handleSubmit}
@@ -120,13 +121,51 @@ export default function Login({ formik }: ILoginForm) {
                   placeholder="Password"
                 />
               </TextFieldCustoms>
-              <Link
-                style={{ marginTop: "10px", marginBottom: "10px" }}
-                className="ml-1 text-red-400 float-right"
-                to="/register"
-              >
-                Quên mật khẩu
-              </Link>
+              <TextFieldCustoms
+                id="fullName"
+                name="fullName"
+                label="Full Name"
+                condition={Boolean(touched.email && errors.email)}
+                errorMessage={errors.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                fullWidth={true}
+                placeholder="Ex: Khoa123"
+                variant="outlined"
+                type="text"
+                required
+                value={values.fullName}
+              />
+              <TextFieldCustoms
+                id="telephone"
+                name="telephone"
+                label="Telephone"
+                condition={Boolean(touched.email && errors.email)}
+                errorMessage={errors.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                fullWidth={true}
+                placeholder="Ex: Khoa123"
+                variant="outlined"
+                type="text"
+                required
+                value={values.telephone}
+              />
+              <TextFieldCustoms
+                id="address"
+                name="address"
+                label="Address"
+                condition={Boolean(touched.email && errors.email)}
+                errorMessage={errors.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                fullWidth={true}
+                placeholder="Ex: Khoa123"
+                variant="outlined"
+                type="text"
+                required
+                value={values.address}
+              />
               <div className="mt-3">
                 <button
                   // onClick={() => {
@@ -135,14 +174,8 @@ export default function Login({ formik }: ILoginForm) {
                   type="submit"
                   className="lex  w-full items-center justify-center bg-red-500 py-4 px-2 text-sm uppercase text-white hover:bg-red-600"
                 >
-                  Đăng nhập
+                  Tiếp theo
                 </button>
-              </div>
-              <div className="item-center mt-8 flex justify-center">
-                <span className="text-slate-400">Bạn chưa có tài khoản ?</span>
-                <Link className="ml-1 text-red-400" to="/register">
-                  Đăng ký
-                </Link>
               </div>
             </form>
           </div>
