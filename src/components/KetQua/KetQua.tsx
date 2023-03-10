@@ -94,6 +94,7 @@ export default function KetQua() {
     })
       .then((rs) => {
         setData(rs.data);
+        localStorage.setItem("hostId", rs.data.hostId);
       })
       .catch();
   }, []);
@@ -260,7 +261,9 @@ export default function KetQua() {
                                     navigate("about");
                                   }}
                                 >
-                                  {item.description}
+                                  {item.description.length < 50
+                                    ? item.description
+                                    : `${item.description.slice(0, 49)}...`}
                                 </Typography>
                                 <Box
                                   style={{ display: "flex", marginTop: "20px" }}
@@ -282,7 +285,8 @@ export default function KetQua() {
                                       color: "blue",
                                     }}
                                   >
-                                    ${item.price.toString().slice(0,3)}k/{item.unit}
+                                    ${item.price.toString().slice(0, 3)}k/
+                                    {item.unit}
                                   </Typography>
                                 </Box>
                               </Grid>
@@ -293,149 +297,6 @@ export default function KetQua() {
                     </Box>
                   );
                 })}
-
-                {/* <Box style={{ marginLeft: "90px", marginTop: "15px" }}>
-                  <Paper
-                    style={{ width: "600px", height: "170px" }}
-                    sx={{
-                      p: 2,
-                      margin: "auto",
-                      maxWidth: 1000,
-                      flexGrow: 1,
-                      backgroundColor: (theme) =>
-                        theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-                    }}
-                  >
-                    <Grid container spacing={2}>
-                      <Grid item>
-                        <ButtonBase sx={{ width: 328, height: 128 }}>
-                          <Img
-                            onClick={() => {
-                              navigate("about");
-                            }}
-                            alt="complex"
-                            src={ketuqaimg}
-                            style={{ borderRadius: "20px" }}
-                          />
-                        </ButtonBase>
-                      </Grid>
-                      <Grid item xs={12} sm container>
-                        <Grid item xs container direction="column" spacing={2}>
-                          <Grid item xs>
-                            <Typography
-                              onClick={() => {
-                                navigate("about");
-                              }}
-                              gutterBottom
-                              variant="subtitle1"
-                              component="div"
-                            >
-                              CLB Chim Cảnh Thủ Đức
-                            </Typography>
-                            <Typography
-                              onClick={() => {
-                                navigate("about");
-                              }}
-                              variant="body2"
-                              color="text.secondary"
-                            >
-                              100 lồng | Sân thoáng mát
-                            </Typography>
-                            <Box style={{ display: "flex", marginTop: "20px" }}>
-                              <Typography
-                                onClick={() => {
-                                  navigate("about");
-                                }}
-                              >
-                                <StarIcon style={{ color: "orange" }} /> 4.60
-                                (210)
-                              </Typography>
-                              <Typography
-                                onClick={() => {
-                                  navigate("about");
-                                }}
-                                style={{ marginLeft: "20px", color: "blue" }}
-                              >
-                                $100k/ngày
-                              </Typography>
-                            </Box>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Paper>
-                </Box>
-                <Box style={{ marginLeft: "90px", marginTop: "15px" }}>
-                  <Paper
-                    style={{ width: "600px", height: "170px" }}
-                    sx={{
-                      p: 2,
-                      margin: "auto",
-                      maxWidth: 1000,
-                      flexGrow: 1,
-                      backgroundColor: (theme) =>
-                        theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-                    }}
-                  >
-                    <Grid container spacing={2}>
-                      <Grid item>
-                        <ButtonBase sx={{ width: 328, height: 128 }}>
-                          <Img
-                            onClick={() => {
-                              navigate("about");
-                            }}
-                            alt="complex"
-                            src={ketuqaimg}
-                            style={{ borderRadius: "20px" }}
-                          />
-                        </ButtonBase>
-                      </Grid>
-                      <Grid item xs={12} sm container>
-                        <Grid item xs container direction="column" spacing={2}>
-                          <Grid item xs>
-                            <Typography
-                              onClick={() => {
-                                navigate("about");
-                              }}
-                              gutterBottom
-                              variant="subtitle1"
-                              component="div"
-                            >
-                              CLB Chim Cảnh Thủ Đức
-                            </Typography>
-                            <Typography
-                              onClick={() => {
-                                navigate("about");
-                              }}
-                              variant="body2"
-                              color="text.secondary"
-                            >
-                              100 lồng | Sân thoáng mát
-                            </Typography>
-                            <Box style={{ display: "flex", marginTop: "20px" }}>
-                              <Typography
-                                onClick={() => {
-                                  navigate("about");
-                                }}
-                              >
-                                <StarIcon style={{ color: "orange" }} /> 4.60
-                                (210)
-                              </Typography>
-                              <Typography
-                                onClick={() => {
-                                  navigate("about");
-                                }}
-                                style={{ marginLeft: "20px", color: "blue" }}
-                              >
-                                $100k/ngày
-                              </Typography>
-                            </Box>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Paper>
-                </Box> */}
               </Grid>
             </Box>
           </Grid>

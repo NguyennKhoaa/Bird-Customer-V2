@@ -92,18 +92,20 @@ export default function About() {
   const [data, setData] = useState<IAbout>();
   const [date, setDate] = useState<Date>();
 
+  const hostId = localStorage.getItem("hostId");
   useEffect(() => {
-    axios({
-      method: "GET",
-      url: "https://swpbirdboardingv1.azurewebsites.net/api/Home/GetHostDetail?hostid=1",
-    })
-      .then((rs) => {
-        console.log(rs.data.data[0]);
-
-        setData(rs.data);
+    if (hostId) {
+      axios({
+        method: "GET",
+        url: `https://swpbirdboardingv1.azurewebsites.net/api/Home/GetHostDetail?hostid=${hostId}`,
       })
-      .catch();
-  }, []);
+        .then((rs) => {
+          console.log(rs.data.data[0]);
+          setData(rs.data);
+        })
+        .catch();
+    }
+  }, [hostId]);
   const [valueLichTrong, setValueLichTrong] = React.useState<DateRange<Dayjs>>([
     null,
     null,
@@ -112,8 +114,8 @@ export default function About() {
     initialValues: {
       dateStart: "",
       dateEnd: "",
-      hostId: 1,
-      accountId: 1,
+      hostId: parseInt(localStorage.getItem("hostId") || "0", 10),
+      accountId: parseInt(localStorage.getItem("accountId") || "0", 10),
       birdProfileId: 1,
     },
     // validationSchema: schemaLogin,

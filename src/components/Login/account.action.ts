@@ -33,8 +33,9 @@ export const fetchLogin = async (
   url =
     "https://swpbirdboardingv1.azurewebsites.net/api/v1/Accounts/LoginByMember";
   const response = await restAPI.post<ResultPayload>(url, payload);
+  const { accountId } = response.data;
+  localStorage.setItem("accountId", accountId.toString());
   return response.data;
-  // localStorage.setItem("accountId");
 };
 
 export const fetchSignup = async (

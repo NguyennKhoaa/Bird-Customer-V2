@@ -106,7 +106,7 @@ export default function HoaDon({ id }: { id: number }) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style} style={{ width: "50%" }}>
+        <Box sx={style} style={{ width: "70%" }}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Hóa đơn tạm tính
           </Typography>

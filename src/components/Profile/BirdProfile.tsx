@@ -125,7 +125,7 @@ export default function BirdProfile() {
       imageUrl: "",
       type: "",
       description: "",
-      accountId: 1,
+      accountId: parseInt(localStorage.getItem("accountId") || "0", 10),
     },
     // validationSchema: schemaLogin,
     validateOnMount: true,
