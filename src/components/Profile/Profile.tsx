@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Box, Card, Grid, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, Grid, Stack, Typography } from "@mui/material";
 import CardCustom from "./card";
 import UploadAvatar from "./uploadAvatar";
 import TextFieldCustoms from "./TextFieldCustoms";
+import TextField from "@mui/material/TextField";
 import axios from "axios";
 import Appbar from "../Appbar/Appbar";
 import Footer from "../Footer/Footer";
 import Iframe from "react-iframe";
 import styled from "@emotion/styled";
+import { FormikProps } from "formik";
 
 const LabelStyle = styled(Typography)(() => ({
   color: "green",
@@ -30,6 +32,9 @@ interface IProfile {
   data: Data[];
 }
 
+interface IProfileForm {
+  formik: FormikProps<IProfile>;
+}
 const Profile = (): JSX.Element => {
   const [avatar, setAvatar] = React.useState("");
   const [data, setData] = useState<IProfile>();
@@ -47,6 +52,27 @@ const Profile = (): JSX.Element => {
         console.log(err);
       });
   }, []);
+  const handleUpdate = () => {
+    axios({
+      method: "PUT",
+      url: "https://swpbirdboardingv1.azurewebsites.net/api/v1/Accounts/EditAccount",
+      data: {
+        id: data?.data[0].id,
+        fullName: data?.data[0].fullName,
+        telephone: data?.data[0].telephone,
+        dob: data?.data[0].dob,
+        address: data?.data[0].address,
+      },
+    })
+      .then((rs) => {
+        console.log(rs.data);
+        alert("Profile updated successfully!");
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Failed to update profile. Please try again later.");
+      });
+  };
 
   return (
     <>
@@ -62,6 +88,10 @@ const Profile = (): JSX.Element => {
       >
         Thông tin cá nhân{" "}
       </LabelStyle>
+      <Button variant="contained" onClick={handleUpdate}>
+        Cập nhật
+      </Button>
+
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Box
@@ -111,7 +141,7 @@ const Profile = (): JSX.Element => {
                 direction={{ xs: "column", sm: "row" }}
                 spacing={{ xs: 3, sm: 2 }}
               >
-                <TextFieldCustoms
+                <TextField
                   id="username"
                   name="username"
                   label="Họ và tên"
@@ -121,6 +151,7 @@ const Profile = (): JSX.Element => {
                   type="text"
                   required
                   value={data?.data[0].fullName}
+                  onChange={handleUpdate}
                 />
                 <TextFieldCustoms
                   id="email"

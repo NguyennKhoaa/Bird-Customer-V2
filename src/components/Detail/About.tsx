@@ -72,7 +72,7 @@ interface IAbout {
   data: Data[];
 }
 
-interface Date {
+interface Datee {
   dateStart: string;
   dateEnd: string;
   hostId: number;
@@ -90,7 +90,16 @@ interface Booking {
 
 export default function About() {
   const [data, setData] = useState<IAbout>();
-  const [date, setDate] = useState<Date>();
+  const [date, setDate] = useState<Datee>();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDateEnd, setSelectedDateEnd] = useState<Date | null>(null);
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+  };
+  const handleDateChangeEnd = (date: Date | null) => {
+    setSelectedDateEnd(date);
+  };
 
   useEffect(() => {
     axios({
@@ -143,6 +152,7 @@ export default function About() {
         });
     },
   });
+
   return (
     <Box>
       <Appbar />
@@ -324,10 +334,11 @@ export default function About() {
                             label="Ngày bắt đầu"
                             value={formik.values.dateStart}
                             onChange={(newValue) => {
-                              const date = new Date(newValue as string)
+                              const date = new Date(newValue as any)
                                 .toLocaleDateString()
                                 .split("/");
                               console.log("new", date);
+
                               formik.setFieldValue(
                                 "dateStart",
                                 `${date[2]}-${date[0].padStart(
@@ -336,6 +347,7 @@ export default function About() {
                                 )}-${date[1].padStart(2, "0")}`
                               );
                             }}
+                            minDate={new Date()}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
@@ -350,7 +362,7 @@ export default function About() {
                             label="Ngày kết thúc"
                             value={formik.values.dateEnd}
                             onChange={(newValue) => {
-                              const date = new Date(newValue as string)
+                              const date = new Date(newValue as any)
                                 .toLocaleDateString()
                                 .split("/");
                               console.log("new", date);
@@ -363,6 +375,7 @@ export default function About() {
                                 )}-${date[1].padStart(2, "0")}`
                               );
                             }}
+                            minDate={new Date()}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
