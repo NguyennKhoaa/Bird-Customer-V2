@@ -94,7 +94,7 @@ export default function KetQua() {
     })
       .then((rs) => {
         setData(rs.data);
-        localStorage.setItem("hostId", rs.data.hostId);
+        // localStorage.setItem("hostId", rs.data.data[0].hostId);
       })
       .catch();
   }, []);
@@ -228,6 +228,7 @@ export default function KetQua() {
                               <Img
                                 onClick={() => {
                                   navigate("about");
+                                  localStorage.setItem("hostId", item.hostId);
                                 }}
                                 alt="complex"
                                 src={ketuqaimg}
@@ -247,6 +248,7 @@ export default function KetQua() {
                                 <Typography
                                   onClick={() => {
                                     navigate("about");
+                                    localStorage.setItem("hostId", item.hostId); // Save hostId in localStorage
                                   }}
                                   gutterBottom
                                   variant="subtitle1"
@@ -259,6 +261,7 @@ export default function KetQua() {
                                   color="text.secondary"
                                   onClick={() => {
                                     navigate("about");
+                                    localStorage.setItem("hostId", item.hostId); // Save hostId in localStorage
                                   }}
                                 >
                                   {item.description.length < 50
@@ -271,6 +274,10 @@ export default function KetQua() {
                                   <Typography
                                     onClick={() => {
                                       navigate("about");
+                                      localStorage.setItem(
+                                        "hostId",
+                                        item.hostId
+                                      ); // Save hostId in localStorage
                                     }}
                                   >
                                     <StarIcon style={{ color: "orange" }} />{" "}
@@ -279,6 +286,10 @@ export default function KetQua() {
                                   <Typography
                                     onClick={() => {
                                       navigate("about");
+                                      localStorage.setItem(
+                                        "hostId",
+                                        item.hostId
+                                      ); // Save hostId in localStorage
                                     }}
                                     style={{
                                       marginLeft: "20px",

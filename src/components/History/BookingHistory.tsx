@@ -189,9 +189,10 @@ function Row(props: { row: Data }) {
 export default function HistoryBooking() {
   const [data, setData] = React.useState<Data[]>();
   React.useEffect(() => {
+    const accountId = localStorage.getItem("accountId");
     axios({
       method: "GET",
-      url: "https://swpbirdboardingv1.azurewebsites.net/api/Home/HistoryBooking?accountid=1&pagesize=50&pagenumber=1",
+      url: `https://swpbirdboardingv1.azurewebsites.net/api/Home/HistoryBooking?accountid=${accountId}&pagesize=50&pagenumber=1`,
     })
       .then((rs) => {
         console.log(rs.data.data);

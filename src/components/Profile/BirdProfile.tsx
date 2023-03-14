@@ -107,9 +107,10 @@ export default function BirdProfile() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   React.useEffect(() => {
+    const accountId = localStorage.getItem("accountId");
     axios({
       method: "GET",
-      url: "https://swpbirdboardingv1.azurewebsites.net/api/Home/GetBirdProfileList?accountid=1&pagesize=10&pagenumber=1",
+      url: `https://swpbirdboardingv1.azurewebsites.net/api/Home/GetBirdProfileList?accountid=${accountId}&pagesize=10&pagenumber=1`,
     })
       .then((rs) => {
         setData(rs.data);

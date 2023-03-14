@@ -4,9 +4,14 @@ import {
   Button,
   Card,
   Grid,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
+  SelectChangeEvent,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
@@ -72,7 +77,7 @@ interface IAbout {
   data: Data[];
 }
 
-interface Date {
+interface Datee {
   dateStart: string;
   dateEnd: string;
   hostId: number;
@@ -87,25 +92,69 @@ interface Booking {
   accountId: number;
   birdProfileId: number;
 }
+interface DataItem {
+  id: number;
+  name: string;
+}
 
 export default function About() {
   const [data, setData] = useState<IAbout>();
-  const [date, setDate] = useState<Date>();
+  const [date, setDate] = useState<Datee>();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDateEnd, setSelectedDateEnd] = useState<Date | null>(null);
 
-  const hostId = localStorage.getItem("hostId");
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+  };
+  const handleDateChangeEnd = (date: Date | null) => {
+    setSelectedDateEnd(date);
+  };
+  const [value, setValue] = useState("");
+  const [valueDefault, setValueDefault] = useState("");
+  const [options, setOptions] = useState<string[]>([]);
+  const [birdProfileId, setBirdProfileId] = useState(0);
+
   useEffect(() => {
-    if (hostId) {
-      axios({
-        method: "GET",
-        url: `https://swpbirdboardingv1.azurewebsites.net/api/Home/GetHostDetail?hostid=${hostId}`,
+    const accountId = localStorage.getItem("accountId");
+
+    axios({
+      method: "GET",
+      url: `https://swpbirdboardingv1.azurewebsites.net/api/Home/GetBirdProfileList?accountid=${accountId}&pagesize=10&pagenumber=1`,
+    })
+      .then((response) => {
+        const data: DataItem[] = response.data.data;
+        const dataDefault = data[0].name;
+        const optionValues = data.map((item: DataItem) => item.name);
+        setOptions(optionValues);
+        setValueDefault(dataDefault);
+
+        // Cập nhật giá trị birdProfileId
+        const defaultBirdProfileId = data[0].id;
+        setBirdProfileId(defaultBirdProfileId);
+
+        // Lưu birdProfileId vào localStorage
+        localStorage.setItem("birdProfileId", defaultBirdProfileId as any);
       })
-        .then((rs) => {
-          console.log(rs.data.data[0]);
-          setData(rs.data);
-        })
-        .catch();
-    }
-  }, [hostId]);
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    setValue(event.target.value);
+  };
+  useEffect(() => {
+    const hostId = localStorage.getItem("hostId");
+    axios({
+      method: "GET",
+      url: `https://swpbirdboardingv1.azurewebsites.net/api/Home/GetHostDetail?hostid=${hostId}`,
+    })
+      .then((rs) => {
+        console.log(rs.data.data[0]);
+
+        setData(rs.data);
+      })
+      .catch();
+  }, []);
   const [valueLichTrong, setValueLichTrong] = React.useState<DateRange<Dayjs>>([
     null,
     null,
@@ -145,6 +194,7 @@ export default function About() {
         });
     },
   });
+
   return (
     <Box>
       <Appbar />
@@ -320,16 +370,46 @@ export default function About() {
                             <Typography>4.60 (280)</Typography>
                           </Grid>
                         </Box>
-
+                        <FormControl
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          //error={error}
+                        >
+                          <InputLabel>Chọn Chim</InputLabel>
+                          <Select
+                            onChange={(event) => {
+                              handleChange(event as any);
+                              const birdProfileId = event.target.value;
+                              localStorage.setItem(
+                                "birdProfileId",
+                                birdProfileId as any
+                              ); // Save birdProfileId in localStorage
+                            }}
+                            style={{ width: "100%" }}
+                            label="Chọn Chim"
+                          >
+                            {options.map((option) => (
+                              <MenuItem
+                                key={option}
+                                value={option}
+                                // defaultValue là phần tử số 1 trong mảng options
+                              >
+                                {option}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <div style={{ marginTop: "40px" }}></div>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DatePicker
                             label="Ngày bắt đầu"
                             value={formik.values.dateStart}
                             onChange={(newValue) => {
-                              const date = new Date(newValue as string)
+                              const date = new Date(newValue as any)
                                 .toLocaleDateString()
                                 .split("/");
                               console.log("new", date);
+
                               formik.setFieldValue(
                                 "dateStart",
                                 `${date[2]}-${date[0].padStart(
@@ -337,7 +417,16 @@ export default function About() {
                                   "0"
                                 )}-${date[1].padStart(2, "0")}`
                               );
+
+                              // Update minDate for dateEnd
+                              const newMinDate = new Date(newValue as any);
+                              if (
+                                newMinDate > new Date(formik.values.dateEnd)
+                              ) {
+                                formik.setFieldValue("dateEnd", newMinDate);
+                              }
                             }}
+                            minDate={new Date()}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
@@ -352,7 +441,7 @@ export default function About() {
                             label="Ngày kết thúc"
                             value={formik.values.dateEnd}
                             onChange={(newValue) => {
-                              const date = new Date(newValue as string)
+                              const date = new Date(newValue as any)
                                 .toLocaleDateString()
                                 .split("/");
                               console.log("new", date);
@@ -365,6 +454,7 @@ export default function About() {
                                 )}-${date[1].padStart(2, "0")}`
                               );
                             }}
+                            minDate={formik.values.dateStart || new Date()}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
