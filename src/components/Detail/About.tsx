@@ -4,9 +4,14 @@ import {
   Button,
   Card,
   Grid,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
+  SelectChangeEvent,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
@@ -87,6 +92,10 @@ interface Booking {
   accountId: number;
   birdProfileId: number;
 }
+interface DataItem {
+  id: number;
+  name: string;
+}
 
 export default function About() {
   const [data, setData] = useState<IAbout>();
@@ -100,7 +109,30 @@ export default function About() {
   const handleDateChangeEnd = (date: Date | null) => {
     setSelectedDateEnd(date);
   };
+  const [value, setValue] = useState("");
+  const [valueDefault, setValueDefault] = useState("");
+  const [options, setOptions] = useState<string[]>([]);
 
+  useEffect(() => {
+    axios({
+      method: "GET",
+      url: "https://swpbirdboardingv1.azurewebsites.net/api/Home/GetBirdProfileList?accountid=1&pagesize=10&pagenumber=1",
+    })
+      .then((response) => {
+        const data: DataItem[] = response.data.data;
+        const dataDefault = data[0].name;
+        console.log("response", data);
+        const optionValues = data.map((item: DataItem) => item.name);
+        setOptions(optionValues);
+        setValueDefault(dataDefault);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    setValue(event.target.value);
+  };
   useEffect(() => {
     axios({
       method: "GET",
@@ -328,7 +360,29 @@ export default function About() {
                             <Typography>4.60 (280)</Typography>
                           </Grid>
                         </Box>
-
+                        <FormControl
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          //error={error}
+                        >
+                          <InputLabel>Chọn Chim</InputLabel>
+                          <Select
+                            onChange={handleChange}
+                            style={{ width: "100%" }}
+                            label="Chọn Chim"
+                          >
+                            {options.map((option) => (
+                              <MenuItem
+                                key={option}
+                                value={option}
+                                // defaultValue là phần tử số 1 trong mảng options
+                              >
+                                {option}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <div style={{ marginTop: "40px" }}></div>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DatePicker
                             label="Ngày bắt đầu"
@@ -346,6 +400,14 @@ export default function About() {
                                   "0"
                                 )}-${date[1].padStart(2, "0")}`
                               );
+
+                              // Update minDate for dateEnd
+                              const newMinDate = new Date(newValue as any);
+                              if (
+                                newMinDate > new Date(formik.values.dateEnd)
+                              ) {
+                                formik.setFieldValue("dateEnd", newMinDate);
+                              }
                             }}
                             minDate={new Date()}
                             renderInput={(params) => (
@@ -375,7 +437,7 @@ export default function About() {
                                 )}-${date[1].padStart(2, "0")}`
                               );
                             }}
-                            minDate={new Date()}
+                            minDate={formik.values.dateStart || new Date()}
                             renderInput={(params) => (
                               <TextField
                                 {...params}

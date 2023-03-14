@@ -24,6 +24,8 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Footer from "../Footer/Footer";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Button } from "@mui/material";
+import { Label } from "@mui/icons-material";
 
 const TAX_RATE = 0.07;
 
@@ -85,6 +87,11 @@ const Img = styled("img")({
   maxHeight: "100%",
 });
 
+const LabelStyle = styled(Typography)(() => ({
+  color: "green",
+  marginBottom: "8px",
+}));
+
 export default function KetQua() {
   const [data, setData] = useState<IKetQua>();
   useEffect(() => {
@@ -112,101 +119,123 @@ export default function KetQua() {
           <Grid item xs={8}>
             <Box sx={{ flexGrow: 1 }}>
               <Grid container spacing={3}>
-                <Grid item xs={3}>
-                  <Box
-                    sx={{ minWidth: 120 }}
-                    style={{ marginTop: "20px", textAlign: "center" }}
+                <Box
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    height: "100%",
+                    // các trên 30px
+                    marginTop: "35px",
+                    //cách trái 30px
+                    marginLeft: "30px",
+                  }}
+                >
+                  <LabelStyle
+                    style={{
+                      color: "black",
+                      fontWeight: "bold",
+                      fontSize: "12px",
+                      textAlign: "center",
+                    }}
                   >
-                    <FormControl style={{ width: "150px" }}>
-                      <InputLabel id="demo-simple-select-label">
-                        Đánh giá
-                      </InputLabel>
-                      <Select
-                        style={{ borderRadius: "25px" }}
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={age}
-                        label="Age"
-                        onChange={handleChange}
+                    Gợi ý cho bạn :
+                  </LabelStyle>
+                  <Grid item xs={3}>
+                    <Button
+                      variant="contained"
+                      style={{
+                        backgroundColor: "#f5f5f5",
+                        borderRadius: "25px",
+                        width: "130px",
+                        height: "40px",
+                      }}
+                      onClick={() => {
+                        navigate("result");
+                      }}
+                    >
+                      <Typography
+                        style={{
+                          color: "black",
+                          fontWeight: "bold",
+                          fontSize: "15px",
+                        }}
                       >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Box>
-                </Grid>
-                <Grid item xs={3}>
-                  <Box
-                    sx={{ minWidth: 120 }}
-                    style={{ marginTop: "20px", textAlign: "center" }}
-                  >
-                    <FormControl style={{ width: "130px" }}>
-                      <InputLabel id="demo-simple-select-label">
-                        Mức sao
-                      </InputLabel>
-                      <Select
-                        style={{ borderRadius: "25px" }}
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={age}
-                        label="Age"
-                        onChange={handleChange}
+                        {" >=50.000đ"}
+                      </Typography>
+                    </Button>
+                  </Grid>
+                  <div style={{ width: "20px" }} />
+                  <Grid item xs={3}>
+                    <Button
+                      variant="contained"
+                      style={{
+                        backgroundColor: "#f5f5f5",
+                        borderRadius: "25px",
+                        width: "130px",
+                        height: "40px",
+                      }}
+                      onClick={() => navigate("/price")}
+                    >
+                      <Typography
+                        style={{
+                          color: "black",
+                          fontWeight: "bold",
+                          fontSize: "15px",
+                        }}
                       >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Box>
-                </Grid>
-
-                <Grid item xs={3}>
-                  <Box
-                    sx={{ minWidth: 120 }}
-                    style={{ marginTop: "20px", textAlign: "center" }}
-                  >
-                    <FormControl style={{ width: "100px" }}>
-                      <InputLabel id="demo-simple-select-label">Giá</InputLabel>
-                      <Select
-                        style={{ borderRadius: "25px" }}
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={age}
-                        label="Age"
-                        onChange={handleChange}
+                        {" >=100.000đ"}
+                      </Typography>
+                    </Button>
+                  </Grid>
+                  <div style={{ width: "20px" }} />
+                  <Grid item xs={3}>
+                    <Button
+                      variant="contained"
+                      style={{
+                        backgroundColor: "#f5f5f5",
+                        borderRadius: "25px",
+                        width: "130px",
+                        height: "40px",
+                      }}
+                      onClick={() => navigate("/price")}
+                    >
+                      <Typography
+                        style={{
+                          color: "black",
+                          fontWeight: "bold",
+                          fontSize: "15px",
+                        }}
                       >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Box>
-                </Grid>
-                <Grid item xs={3}>
-                  <Box
-                    sx={{ minWidth: 120 }}
-                    style={{ marginTop: "20px", textAlign: "center" }}
-                  >
-                    <FormControl style={{ width: "100px" }}>
-                      <InputLabel id="demo-simple-select-label">
-                        More
-                      </InputLabel>
-                      <Select
-                        style={{ borderRadius: "25px" }}
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={age}
-                        label="Age"
-                        onChange={handleChange}
+                        {" >=200.000đ"}
+                      </Typography>
+                    </Button>
+                  </Grid>
+                  <div style={{ width: "20px" }} />
+                  <Grid item xs={3}>
+                    <Button
+                      variant="contained"
+                      style={{
+                        backgroundColor: "#f5f5f5",
+                        borderRadius: "25px",
+                        width: "130px",
+                        height: "40px",
+                      }}
+                      onClick={() => navigate("/price")}
+                    >
+                      <Typography
+                        style={{
+                          color: "black",
+                          fontWeight: "bold",
+                          fontSize: "15px",
+                        }}
                       >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Box>
-                </Grid>
+                        {" >=300.000đ"}
+                      </Typography>
+                    </Button>
+                  </Grid>
+                </Box>
                 {data?.data.map((item, index) => {
                   return (
                     <Box style={{ marginLeft: "90px", marginTop: "15px" }}>
@@ -282,7 +311,8 @@ export default function KetQua() {
                                       color: "blue",
                                     }}
                                   >
-                                    ${item.price.toString().slice(0,3)}k/{item.unit}
+                                    ${item.price.toString().slice(0, 3)}k/
+                                    {item.unit}
                                   </Typography>
                                 </Box>
                               </Grid>

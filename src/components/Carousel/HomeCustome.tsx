@@ -173,96 +173,97 @@ export default function HomeCustome() {
             </LabelStyle>
             <Box style={{ display: "flex", justifyContent: "center" }}>
               <Grid item xs={3}>
-                <Box
-                  sx={{ minWidth: 120 }}
-                  style={{ marginTop: "20px", textAlign: "center" }}
+                <Button
+                  variant="contained"
+                  style={{
+                    backgroundColor: "#f5f5f5",
+                    borderRadius: "25px",
+                    width: "130px",
+                    height: "40px",
+                  }}
+                  onClick={() => {
+                    navigate("result");
+                  }}
                 >
-                  <FormControl style={{ width: "150px" }}>
-                    <InputLabel id="demo-simple-select-label">
-                      Đánh giá
-                    </InputLabel>
-                    <Select
-                      style={{ borderRadius: "25px", marginRight: "10px" }}
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={age}
-                      label="Age"
-                      onChange={handleChange}
-                    >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
+                  <Typography
+                    style={{
+                      color: "black",
+                      fontWeight: "bold",
+                      fontSize: "15px",
+                    }}
+                  >
+                    50.000đ
+                  </Typography>
+                </Button>
               </Grid>
+              <div style={{ width: "20px" }} />
               <Grid item xs={3}>
-                <Box
-                  sx={{ minWidth: 120 }}
-                  style={{ marginTop: "20px", textAlign: "center" }}
+                <Button
+                  variant="contained"
+                  style={{
+                    backgroundColor: "#f5f5f5",
+                    borderRadius: "25px",
+                    width: "130px",
+                    height: "40px",
+                  }}
+                  onClick={() => navigate("/price")}
                 >
-                  <FormControl style={{ width: "130px" }}>
-                    <InputLabel id="demo-simple-select-label">
-                      Mức sao
-                    </InputLabel>
-                    <Select
-                      style={{ borderRadius: "25px" }}
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={age}
-                      label="Age"
-                      onChange={handleChange}
-                    >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
+                  <Typography
+                    style={{
+                      color: "black",
+                      fontWeight: "bold",
+                      fontSize: "15px",
+                    }}
+                  >
+                    100.000đ
+                  </Typography>
+                </Button>
               </Grid>
+              <div style={{ width: "20px" }} />
               <Grid item xs={3}>
-                <Box
-                  sx={{ minWidth: 120 }}
-                  style={{ marginTop: "20px", textAlign: "center" }}
+                <Button
+                  variant="contained"
+                  style={{
+                    backgroundColor: "#f5f5f5",
+                    borderRadius: "25px",
+                    width: "130px",
+                    height: "40px",
+                  }}
+                  onClick={() => navigate("/price")}
                 >
-                  <FormControl style={{ width: "100px" }}>
-                    <InputLabel id="demo-simple-select-label">Giá</InputLabel>
-                    <Select
-                      style={{ borderRadius: "25px" }}
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={age}
-                      label="Age"
-                      onChange={handleChange}
-                    >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
+                  <Typography
+                    style={{
+                      color: "black",
+                      fontWeight: "bold",
+                      fontSize: "15px",
+                    }}
+                  >
+                    200.000đ
+                  </Typography>
+                </Button>
               </Grid>
+              <div style={{ width: "20px" }} />
               <Grid item xs={3}>
-                <Box
-                  sx={{ minWidth: 120 }}
-                  style={{ marginTop: "20px", textAlign: "center" }}
+                <Button
+                  variant="contained"
+                  style={{
+                    backgroundColor: "#f5f5f5",
+                    borderRadius: "25px",
+                    width: "130px",
+                    height: "40px",
+                  }}
+                  onClick={() => navigate("/price")}
                 >
-                  <FormControl style={{ width: "100px" }}>
-                    <InputLabel id="demo-simple-select-label">More</InputLabel>
-                    <Select
-                      style={{ borderRadius: "25px" }}
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={age}
-                      label="Age"
-                      onChange={handleChange}
-                    >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
+                  <Typography
+                    style={{
+                      color: "black",
+                      fontWeight: "bold",
+                      fontSize: "15px",
+                    }}
+                  >
+                    300.000đ
+                  </Typography>
+                </Button>
               </Grid>
             </Box>
 
