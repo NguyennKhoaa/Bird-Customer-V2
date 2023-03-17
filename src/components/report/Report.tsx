@@ -21,6 +21,7 @@ interface Data {
   description: string;
   messageCustomer: string;
   messageHost: string;
+  videoUrl: string;
   status: string;
 }
 
@@ -91,7 +92,7 @@ export default function Report({ id }: { id: number }) {
                       {item.description}
                     </Typography>
                     <Iframe
-                      url="https://www.youtube.com/embed/6R8C8BSdMds"
+                      url={item.videoUrl}
                       width="640px"
                       height="320px"
                       id=""
