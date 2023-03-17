@@ -87,22 +87,25 @@ const Img = styled("img")({
 
 export default function KetQua() {
   const [data, setData] = useState<IKetQua>();
-  useEffect(() => {
-    axios({
-      method: "GET",
-      url: "https://swpbirdboardingv1.azurewebsites.net/api/Home/GetHostList?pagesize=10&pagenumber=1",
-    })
-      .then((rs) => {
-        setData(rs.data);
-        // localStorage.setItem("hostId", rs.data.data[0].hostId);
-      })
-      .catch();
-  }, []);
   const [age, setAge] = React.useState("");
+
+  const fetchData = async (age: string) => {
+    const response = await fetch(
+      `https://swpbirdboardingv1.azurewebsites.net/api/Home/GetHostList?search=${age}&pagesize=10&pagenumber=1`
+    );
+    const data = await response.json();
+    setData(data); // Lưu dữ liệu vào state
+  };
+
+  useEffect(() => {
+    fetchData(age);
+  }, []);
 
   const navigate = useNavigate();
 
   const handleChange = (event: SelectChangeEvent) => {
+    const age = event.target.value as string;
+    fetchData(age);
     setAge(event.target.value as string);
   };
   return (
@@ -119,9 +122,7 @@ export default function KetQua() {
                     style={{ marginTop: "20px", textAlign: "center" }}
                   >
                     <FormControl style={{ width: "150px" }}>
-                      <InputLabel id="demo-simple-select-label">
-                        Đánh giá
-                      </InputLabel>
+                      <InputLabel id="demo-simple-select-label">Giá</InputLabel>
                       <Select
                         style={{ borderRadius: "25px" }}
                         labelId="demo-simple-select-label"
@@ -130,15 +131,15 @@ export default function KetQua() {
                         label="Age"
                         onChange={handleChange}
                       >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        <MenuItem value={50000}>50.000</MenuItem>
+                        <MenuItem value={100000}>100.000</MenuItem>
+                        <MenuItem value={200000}>200.000</MenuItem>
                       </Select>
                     </FormControl>
                   </Box>
                 </Grid>
                 <Grid item xs={3}>
-                  <Box
+                  {/* <Box
                     sx={{ minWidth: 120 }}
                     style={{ marginTop: "20px", textAlign: "center" }}
                   >
@@ -159,11 +160,11 @@ export default function KetQua() {
                         <MenuItem value={30}>Thirty</MenuItem>
                       </Select>
                     </FormControl>
-                  </Box>
+                  </Box> */}
                 </Grid>
 
                 <Grid item xs={3}>
-                  <Box
+                  {/* <Box
                     sx={{ minWidth: 120 }}
                     style={{ marginTop: "20px", textAlign: "center" }}
                   >
@@ -182,10 +183,10 @@ export default function KetQua() {
                         <MenuItem value={30}>Thirty</MenuItem>
                       </Select>
                     </FormControl>
-                  </Box>
+                  </Box> */}
                 </Grid>
                 <Grid item xs={3}>
-                  <Box
+                  {/* <Box
                     sx={{ minWidth: 120 }}
                     style={{ marginTop: "20px", textAlign: "center" }}
                   >
@@ -206,7 +207,7 @@ export default function KetQua() {
                         <MenuItem value={30}>Thirty</MenuItem>
                       </Select>
                     </FormControl>
-                  </Box>
+                  </Box> */}
                 </Grid>
                 {data?.data.map((item, index) => {
                   return (
