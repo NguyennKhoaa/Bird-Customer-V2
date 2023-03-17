@@ -5,45 +5,46 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { Box, CardActionArea } from "@mui/material";
+import { Box, CardActionArea, Modal } from "@mui/material";
 import logo from "../../images/luffy.jpg";
 import StarIcon from "@mui/icons-material/Star";
 import axios from "axios";
 
 interface Data {
-  hostId: string;
-  hostName: string;
-  hostImage: string;
-  price: number;
-  unit: string;
-  amount: number;
+  id: number;
+  imageUrl: string;
+  title: string;
+  status: string;
   description: string;
-  service: [];
+  dateCreate: string;
 }
 
 interface ICarousel {
   statusCode: string;
   content: string;
-  data: Data[];
+  data?: Data[];
 }
 
 export default function CardCarousel(props: any) {
-  // const [data, setData] = useState<ICarousel>();
-  // useEffect(() => {
-  //   axios({
-  //     method: "GET",
-  //     url: "https://swpbirdboardingv1.azurewebsites.net/api/Home/GetHostList?pagesize=10&pagenumber=1",
-  //   })
-  //     .then((rs) => {
-  //       console.log(rs.data);
+  const [data, setData] = useState<Data[]>([]);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedDetails, setSelectedDetails] = useState<Data | null>(null);
 
-  //       setData(rs.data);
-  //     })
-  //     .catch();
-  // }, []);
+  useEffect(() => {
+    axios({
+      method: "GET",
+      url: "https://swpbirdboardingv1.azurewebsites.net/api/Home/GetArticle",
+    })
+      .then((rs) => {
+        console.log(rs.data.data);
+
+        setData(rs.data.data);
+      })
+      .catch();
+  }, []);
+
   const responsive = {
     superLargeDesktop: {
-      // the naming can be any, depends on you.
       breakpoint: { max: 4000, min: 3000 },
       items: 5,
     },
@@ -60,221 +61,107 @@ export default function CardCarousel(props: any) {
       items: 1,
     },
   };
+
+  const handleCardClick = (id: number) => {
+    // Fetch details for the selected card using API call
+    axios({
+      method: "GET",
+      url: `https://swpbirdboardingv1.azurewebsites.net/api/Home/GetArticleDetail?id=${id}`,
+    })
+      .then((rs) => {
+        setSelectedDetails(rs.data.data[0]);
+        setSelectedId(id);
+      })
+      .catch();
+  };
+
   return (
     <div style={{ marginLeft: "30px" }}>
       <Carousel responsive={responsive}>
-        {/* {data?.data.map((item, index) => {
-          return <div>
-          <Card sx={{ maxWidth: 345 }}>
-            <CardActionArea>
-              <CardMedia
-                style={{ height: "300px" }}
-                component="img"
-                height="40"
-                src={logo}
-                alt="green iguana"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  {item.hostName}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {item.description}
-                </Typography>
-                <Box style={{ display: "flex" }}>
-                  <Box>
-                    <Typography
-                      style={{
-                        fontWeight: "bold",
-                        fontSize: "20px",
-                        paddingTop: "15px",
-                      }}
-                    >
-                      {item.price}K/{item.unit}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Box
-                      style={{
-                        display: "flex",
-                        paddingTop: "15px",
-                        paddingLeft: "50px",
-                      }}
-                    >
-                      <Box style={{ color: "orange" }}>
-                        <StarIcon />
+        {data.length > 0 &&
+          data.map((item, index) => {
+            return (
+              <div key={index}>
+                <Card sx={{ maxWidth: 345 }}>
+                  <CardActionArea onClick={() => handleCardClick(item.id)}>
+                    <CardMedia
+                      style={{ height: "300px" }}
+                      component="img"
+                      height="40"
+                      src={item.imageUrl}
+                      alt="green iguana"
+                    />
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {item.title}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {item.title}
+                      </Typography>
+                      <Box style={{ display: "flex" }}>
+                        <Box>
+                          <Box
+                            style={{
+                              display: "flex",
+                              paddingTop: "15px",
+                              paddingLeft: "50px",
+                            }}
+                          >
+                            <Box style={{ color: "orange" }}>
+                              <StarIcon />
+                            </Box>
+                            <Box>
+                              <Typography style={{ marginTop: "4px" }}>
+                                4.6
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </Box>
                       </Box>
-                      <Box>
-                        <Typography style={{ marginTop: "4px" }}>
-                          4.6
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </div>
-        })} */}
-
-        <div>
-          <Card sx={{ maxWidth: 345 }}>
-            <CardActionArea>
-              <CardMedia
-                style={{ height: "300px" }}
-                component="img"
-                height="40"
-                src={logo}
-                alt="green iguana"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  CLB Chim cảnh Thủ Đức
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  100 lồng | Sân thoáng mát
-                </Typography>
-                <Box style={{ display: "flex" }}>
-                  <Box>
-                    <Typography
-                      style={{
-                        fontWeight: "bold",
-                        fontSize: "20px",
-                        paddingTop: "15px",
-                      }}
-                    >
-                      100K/ngày
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Box
-                      style={{
-                        display: "flex",
-                        paddingTop: "15px",
-                        paddingLeft: "50px",
-                      }}
-                    >
-                      <Box style={{ color: "orange" }}>
-                        <StarIcon />
-                      </Box>
-                      <Box>
-                        <Typography style={{ marginTop: "4px" }}>
-                          4.6
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </div>
-        <div>
-          <Card sx={{ maxWidth: 345 }}>
-            <CardActionArea>
-              <CardMedia
-                style={{ height: "300px" }}
-                component="img"
-                height="40"
-                src={logo}
-                alt="green iguana"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  CLB Chim cảnh Thủ Đức
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  100 lồng | Sân thoáng mát
-                </Typography>
-                <Box style={{ display: "flex" }}>
-                  <Box>
-                    <Typography
-                      style={{
-                        fontWeight: "bold",
-                        fontSize: "20px",
-                        paddingTop: "15px",
-                      }}
-                    >
-                      100K/ngày
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Box
-                      style={{
-                        display: "flex",
-                        paddingTop: "15px",
-                        paddingLeft: "50px",
-                      }}
-                    >
-                      <Box style={{ color: "orange" }}>
-                        <StarIcon />
-                      </Box>
-                      <Box>
-                        <Typography style={{ marginTop: "4px" }}>
-                          4.6
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </div>
-        <div>
-          <Card sx={{ maxWidth: 345 }}>
-            <CardActionArea>
-              <CardMedia
-                style={{ height: "300px" }}
-                component="img"
-                height="40"
-                src={logo}
-                alt="green iguana"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  CLB Chim cảnh Thủ Đức
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  100 lồng | Sân thoáng mát
-                </Typography>
-                <Box style={{ display: "flex" }}>
-                  <Box>
-                    <Typography
-                      style={{
-                        fontWeight: "bold",
-                        fontSize: "20px",
-                        paddingTop: "15px",
-                      }}
-                    >
-                      100K/ngày
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Box
-                      style={{
-                        display: "flex",
-                        paddingTop: "15px",
-                        paddingLeft: "50px",
-                      }}
-                    >
-                      <Box style={{ color: "orange" }}>
-                        <StarIcon />
-                      </Box>
-                      <Box>
-                        <Typography style={{ marginTop: "4px" }}>
-                          4.6
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </div>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </div>
+            );
+          })}
       </Carousel>
+      <Modal
+        open={selectedId !== null}
+        onClose={() => setSelectedId(null)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          {/* imageUrl */}
+          <CardMedia
+            style={{ height: "300px" }}
+            component="img"
+            height="40"
+            src={selectedDetails?.imageUrl}
+            alt="green iguana"
+          />
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            {selectedDetails?.title}
+          </Typography>
+
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            {selectedDetails?.description}
+          </Typography>
+          {/* {selectedDetails?.dateCreate} */}
+        </Box>
+      </Modal>
     </div>
   );
 }

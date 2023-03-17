@@ -17,6 +17,8 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import bird from "../../images/bird.png";
 import { useNavigate } from "react-router-dom";
+import Home from "../pages/Home/Home";
+import { HomeRepairServiceOutlined } from "@mui/icons-material";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -209,8 +211,12 @@ const Appbar = (): JSX.Element => {
               aria-label="show 4 new mails"
               color="inherit"
             >
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
+              <Badge color="error">
+                <HomeRepairServiceOutlined
+                  onClick={() => {
+                    navigate("/home");
+                  }}
+                />
               </Badge>
             </IconButton>
             <IconButton

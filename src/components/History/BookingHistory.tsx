@@ -168,11 +168,11 @@ function Row(props: { row: Data }) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <TableRow key={row.dateBooking}>
+                  <TableRow key={row.dateStart}>
                     <TableCell component="th" scope="row">
                       {row.dateStart.split("T")[0]}
                     </TableCell>
-                    <TableCell>{row.dateBooking.split("T")[0]}</TableCell>
+                    <TableCell>{row.dateEnd.split("T")[0]}</TableCell>
                     <TableCell align="right">{row.total}</TableCell>
                     {/* <TableCell align="right">{row.dateBooking}</TableCell> */}
                   </TableRow>

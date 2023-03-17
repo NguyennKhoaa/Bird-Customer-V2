@@ -350,7 +350,9 @@ export default function HomeCustome() {
       >
         Nơi nổi bật{" "}
       </LabelStyle>
-      <CardCarousel />
+      <div style={{ marginTop: "40px" }}>
+        <CardCarousel />
+      </div>
       <div style={{ marginTop: "40px" }}></div>
       <WelcomeDashboard />
       <div style={{ marginTop: "20px" }}></div>

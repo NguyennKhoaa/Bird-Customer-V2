@@ -231,7 +231,7 @@ export default function KetQua() {
                                   localStorage.setItem("hostId", item.hostId);
                                 }}
                                 alt="complex"
-                                src={ketuqaimg}
+                                src={item.hostImage}
                                 style={{ borderRadius: "20px" }}
                               />
                             </ButtonBase>

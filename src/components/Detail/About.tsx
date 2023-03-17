@@ -49,6 +49,7 @@ export interface IFormikProductNewForm {
   description: string;
   openTime: string;
   closeTime: string;
+  hostImage: string;
   coordinate: {
     latitude: string;
     longitude: string;
@@ -232,14 +233,25 @@ export default function About() {
             >
               <Grid container spacing={2} columns={16}>
                 <Grid item xs={8}>
-                  <img src={top1} alt="abc" />
+                  <img src={item.hostImage} alt="abc" />
                 </Grid>
                 <Grid item xs={8} columns={16}>
                   <Grid xs={8}>
-                    <img src={top1} alt="abc" />
+                    <img
+                      src={
+                        "https://baobariavungtau.com.vn/dataimages/201405/original/images981103_gdhdsfh.jpg"
+                      }
+                      alt="abc"
+                    />
                   </Grid>
                   <Grid xs={8} style={{ marginTop: "5px" }}>
-                    <img src={top1} alt="abc" height={100} />
+                    <img
+                      src={
+                        "https://cdn.batdongsan.com.vi/gpictures/500x250/3332/MnxBRjFRaXBNeFJKUXdPa0JKRlZUeENMV1RVZGZIOFJMYXdFNTdFeF9UdUl2NA.jpg"
+                      }
+                      alt="abc"
+                      height={100}
+                    />
                   </Grid>
                 </Grid>
               </Grid>
@@ -607,14 +619,14 @@ export default function About() {
               >
                 <Box>
                   <Avatar
-                    alt="Remy Sharp"
+                    alt="Van Teo"
                     src="https://picsum.photos/200/300"
                     sx={{ width: 56, height: 56 }}
                   />
                 </Box>
                 <Box style={{ marginLeft: "15px" }}>
                   <Typography style={{ fontWeight: "bold", fontSize: "20px" }}>
-                    Kathryn T.
+                    Van Teo
                   </Typography>
                   <Box style={{ display: "flex" }}>
                     <Box>
@@ -628,23 +640,16 @@ export default function About() {
                     </Box>
                     <Box style={{ display: "flex", marginLeft: "50px" }}>
                       <Typography>5/5</Typography>
-                      <Typography style={{ marginLeft: "50px" }}>
+                      {/* <Typography style={{ marginLeft: "50px" }}>
                         Stayted May 2021
-                      </Typography>
+                      </Typography> */}
                     </Box>
                   </Box>
                 </Box>
               </Box>
             </Stack>
             <Typography style={{ marginTop: "25x" }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse
-              velit ut odit iste provident voluptatem assumenda unde expedita.
-              Veritatis reiciendis quos incidunt asperiores illo dignissimos
-              dolores omnis quaerat corporis laboriosam. Lorem ipsum dolor sit
-              amet consectetur adipisicing elit. Esse velit ut odit iste
-              provident voluptatem assumenda unde expedita. Veritatis reiciendis
-              quos incidunt asperiores illo dignissimos dolores omnis quaerat
-              corporis laboriosam.
+              Dịch vụ ổn, good
             </Typography>
           </Card>
         </Grid>
@@ -668,9 +673,9 @@ export default function About() {
                   />
                 </Box>
                 <Box style={{ marginLeft: "15px" }}>
-                  <Typography style={{ fontWeight: "bold", fontSize: "20px" }}>
-                    Kathryn T.
-                  </Typography>
+                  {/* <Typography style={{ fontWeight: "bold", fontSize: "20px" }}>
+                    Van Teo
+                  </Typography> */}
                   <Box style={{ display: "flex" }}>
                     <Box>
                       <Typography style={{ color: "orange", fontSize: "10px" }}>
@@ -683,23 +688,16 @@ export default function About() {
                     </Box>
                     <Box style={{ display: "flex", marginLeft: "50px" }}>
                       <Typography>5/5</Typography>
-                      <Typography style={{ marginLeft: "50px" }}>
+                      {/* <Typography style={{ marginLeft: "50px" }}>
                         Stayted May 2021
-                      </Typography>
+                      </Typography> */}
                     </Box>
                   </Box>
                 </Box>
               </Box>
             </Stack>
             <Typography style={{ marginTop: "25x" }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse
-              velit ut odit iste provident voluptatem assumenda unde expedita.
-              Veritatis reiciendis quos incidunt asperiores illo dignissimos
-              dolores omnis quaerat corporis laboriosam. Lorem ipsum dolor sit
-              amet consectetur adipisicing elit. Esse velit ut odit iste
-              provident voluptatem assumenda unde expedita. Veritatis reiciendis
-              quos incidunt asperiores illo dignissimos dolores omnis quaerat
-              corporis laboriosam.
+              Chất lượng tốt nha mn
             </Typography>
           </Card>
         </Grid>
