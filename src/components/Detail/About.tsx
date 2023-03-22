@@ -13,7 +13,7 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import SportsMmaIcon from "@mui/icons-material/SportsMma";
 import ShowerIcon from "@mui/icons-material/Shower";
@@ -37,6 +37,8 @@ import axios from "axios";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { toast } from "react-toastify";
+
+import { memo } from "react";
 
 const LabelStyle = styled(Typography)(() => ({
   color: "green",
@@ -94,26 +96,49 @@ interface Booking {
   birdProfileId: number;
 }
 interface DataItem {
-  id: number;
+  birdProfileId?: number;
   name: string;
 }
 
-export default function About() {
+interface Feedback {
+  customerName: string;
+  rating: number;
+  feedback: string;
+}
+
+interface CardProps {
+  sx?: any;
+  // Thêm các thuộc tính khác nếu cần
+}
+
+const About = () => {
   const [data, setData] = useState<IAbout>();
   const [date, setDate] = useState<Datee>();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedDateEnd, setSelectedDateEnd] = useState<Date | null>(null);
-
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
-  };
-  const handleDateChangeEnd = (date: Date | null) => {
-    setSelectedDateEnd(date);
-  };
   const [value, setValue] = useState("");
   const [valueDefault, setValueDefault] = useState("");
-  const [options, setOptions] = useState<string[]>([]);
-  const [birdProfileId, setBirdProfileId] = useState(0);
+  const [options, setOptions] = useState<DataItem[]>([]);
+  const [birdProfileId124, setBirdProfileId] = useState(0);
+  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const hostId = localStorage.getItem("hostId");
+      const response = await axios.get<{
+        statusCode: number;
+        content: string;
+        data: Feedback[];
+      }>(
+        `https://swpbirdboardingv1.azurewebsites.net/api/Home/GetFeedback?hostid=${hostId}`
+      );
+
+      if (response.data.statusCode === 200) {
+        setFeedbacks(response.data.data);
+      }
+    }
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const accountId = localStorage.getItem("accountId");
@@ -125,26 +150,39 @@ export default function About() {
       .then((response) => {
         const data: DataItem[] = response.data.data;
         const dataDefault = data[0].name;
-        const optionValues = data.map((item: DataItem) => item.name);
+        const optionValues = data.map((item: DataItem) => ({
+          birdProfileId: item.birdProfileId,
+          name: item.name,
+        }));
         setOptions(optionValues);
         setValueDefault(dataDefault);
-
-        // Cập nhật giá trị birdProfileId
-        const defaultBirdProfileId = data[0].id;
-        setBirdProfileId(defaultBirdProfileId);
-
-        // Lưu birdProfileId vào localStorage
-        localStorage.setItem("birdProfileId", defaultBirdProfileId as any);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
-  const handleChange = (event: SelectChangeEvent<string>) => {
-    setValue(event.target.value);
-  };
+  const [hasSelection, setHasSelection] = useState(false);
+  const handleChange = useCallback(
+    (event: SelectChangeEvent) => {
+      setValue(event.target.value);
+
+      const birdProfileId123 = options.find(
+        (item) => item.name === event.target.value
+      )?.birdProfileId;
+
+      console.log("selected value:", event.target.value);
+      console.log("options:", options);
+      if (!hasSelection) {
+        // Thực hiện render ở đây
+        setHasSelection(true);
+      }
+    },
+    [options]
+  );
+
   useEffect(() => {
     const hostId = localStorage.getItem("hostId");
+
     axios({
       method: "GET",
       url: `https://swpbirdboardingv1.azurewebsites.net/api/Home/GetHostDetail?hostid=${hostId}`,
@@ -160,199 +198,236 @@ export default function About() {
     null,
     null,
   ]);
-  const formik = useFormik({
-    initialValues: {
-      dateStart: "",
-      dateEnd: "",
-      hostId: parseInt(localStorage.getItem("hostId") || "0", 10),
-      accountId: parseInt(localStorage.getItem("accountId") || "0", 10),
-      birdProfileId: 1,
-    },
-    // validationSchema: schemaLogin,
-    validateOnMount: true,
-    validateOnBlur: true,
-    onSubmit: (values: Booking) => {
-      axios({
-        method: "POST",
-        url: "https://swpbirdboardingv1.azurewebsites.net/api/Home/BookingByMember",
-        data: values,
-      })
-        .then((rs) => {
-          console.log(rs);
-          toast("🦄 Booking Success", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        })
-        .catch((err) => {
-          console.log(err);
+
+  const birdProfileIdtest = localStorage.getItem("birdProfileId");
+  const booking = {
+    dateStart: selectedDate?.toISOString().split("T")[0] || "",
+    dateEnd: selectedDateEnd?.toISOString().split("T")[0] || "",
+    hostId: parseInt(localStorage.getItem("hostId") || "0", 10),
+    accountId: parseInt(localStorage.getItem("accountId") || "0", 10),
+    birdProfileId: parseInt(localStorage.getItem("birdProfileId") || "0", 10),
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    axios({
+      method: "POST",
+      url: "https://swpbirdboardingv1.azurewebsites.net/api/Home/BookingByMember",
+      data: booking,
+    })
+      .then((rs) => {
+        console.log(rs);
+        toast("🦄 Booking Success", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
         });
-    },
-  });
-
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
-    <Box>
-      <Appbar />
-      {data?.data.map((item, index) => {
-        return (
-          <>
-            <LabelStyle
-              style={{
-                color: "black",
-                fontWeight: "bold",
-                fontSize: "30px",
-                paddingLeft: "24px",
-                marginTop: "20px",
-              }}
-            >
-              CLB Chim Cảnh {item.hostName}{" "}
-            </LabelStyle>
-            <Box style={{ display: "flex", marginBottom: "20px" }}>
-              <Box style={{ color: "orange", paddingLeft: "24px" }}>
-                <StarIcon />
+    <>
+      <Box>
+        <Appbar />
+        {data?.data.map((item, index) => {
+          return (
+            <>
+              <LabelStyle
+                style={{
+                  color: "black",
+                  fontWeight: "bold",
+                  fontSize: "30px",
+                  paddingLeft: "24px",
+                  marginTop: "20px",
+                }}
+              >
+                CLB Chim Cảnh {item.hostName}{" "}
+              </LabelStyle>
+              <Box style={{ display: "flex", marginBottom: "20px" }}>
+                <Box style={{ color: "orange", paddingLeft: "24px" }}>
+                  <StarIcon />
+                </Box>
+                <Box style={{ marginLeft: "10px", display: "flex" }}>
+                  <Typography>4.60 (280)</Typography>
+                  <Typography style={{ marginLeft: "30px" }}>
+                    {item.description}
+                  </Typography>
+                </Box>
               </Box>
-              <Box style={{ marginLeft: "10px", display: "flex" }}>
-                <Typography>4.60 (280)</Typography>
-                <Typography style={{ marginLeft: "30px" }}>
-                  {item.description}
-                </Typography>
+
+              <Box
+                style={{ marginLeft: "250px" }}
+                sx={{
+                  flexGrow: 1,
+                }}
+              >
+                <Grid
+                  container
+                  // nằm giữa
+                  justifyContent="center"
+                  // mặc định chiều cao và chiều rộng của Grid là 100%
+                  // nếu muốn chỉnh chiều cao và chiều rộng thì dùng height và width
+                  height="200px"
+                  width="500px"
+                >
+                  <Grid item xs={8}>
+                    <img src={item.hostImage} alt="abc" />
+                  </Grid>
+                  {/* <Grid item xs={8} columns={16}>
+                    <Grid xs={8}>
+                      <img
+                        src={
+                          "https://baobariavungtau.com.vn/dataimages/201405/original/images981103_gdhdsfh.jpg"
+                        }
+                        alt="abc"
+                      />
+                    </Grid>
+                    <Grid xs={8} style={{ marginTop: "5px" }}>
+                      <img
+                        src={
+                          "https://cdn.batdongsan.com.vi/gpictures/500x250/3332/MnxBRjFRaXBNeFJKUXdPa0JKRlZUeENMV1RVZGZIOFJMYXdFNTdFeF9UdUl2NA.jpg"
+                        }
+                        alt="abc"
+                        height={100}
+                      />
+                    </Grid>
+                  </Grid> */}
+                </Grid>
               </Box>
-            </Box>
+              <Box>
+                <Grid style={{ marginTop: "20px" }} container spacing={3}>
+                  <Grid item xs={12} md={8}>
+                    <Card sx={{ p: 3 }}>
+                      <Stack spacing={3}>
+                        <LabelStyle
+                          style={{
+                            color: "black",
+                            fontWeight: "bold",
+                            fontSize: "30px",
+                          }}
+                        >
+                          CLB Chim Cảnh {item.hostName}{" "}
+                        </LabelStyle>
+                        <Typography>
+                          Chào mừng bạn đã đến với CLB Chim Cảnh {item.hostName}{" "}
+                          trung tâm lưu trú chim cảnh sáng sủa và thoáng mát ở
+                          tầng trệt là nơi ở hoàn hảo cho để gửi gắm những chú
+                          chim cảnh của bạn
+                        </Typography>
 
-            <Box
-              style={{ marginLeft: "250px" }}
-              sx={{
-                flexGrow: 1,
-              }}
-            >
-              <Grid container spacing={2} columns={16}>
-                <Grid item xs={8}>
-                  <img src={item.hostImage} alt="abc" />
-                </Grid>
-                <Grid item xs={8} columns={16}>
-                  <Grid xs={8}>
-                    <img
-                      src={
-                        "https://baobariavungtau.com.vn/dataimages/201405/original/images981103_gdhdsfh.jpg"
-                      }
-                      alt="abc"
-                    />
+                        <LabelStyle
+                          style={{
+                            color: "black",
+                            fontWeight: "bold",
+                            fontSize: "20px",
+                          }}
+                        >
+                          Không Gian{" "}
+                        </LabelStyle>
+                        <Typography>
+                          Không gian nằm tại tầng trệt của ngôi nhà. Không gian
+                          rộng thoáng mát để chăm sóc và quản lý những chú chim.
+                        </Typography>
+
+                        <LabelStyle
+                          style={{
+                            color: "black",
+                            fontWeight: "bold",
+                            fontSize: "20px",
+                          }}
+                        >
+                          Lồng Chim
+                        </LabelStyle>
+                        <Typography>
+                          Chúng tôi có những lồng chim tốt chất lượng cao và có
+                          thể phù hợp theo từng loại chim
+                        </Typography>
+
+                        <LabelStyle
+                          style={{
+                            color: "black",
+                            fontWeight: "bold",
+                            fontSize: "20px",
+                          }}
+                        >
+                          Dịch Vụ
+                        </LabelStyle>
+                        <Box sx={{ flexGrow: 1 }}>
+                          <Grid container spacing={2}>
+                            <Grid
+                              item
+                              xs={6}
+                              md={4}
+                              style={{ display: "flex" }}
+                            >
+                              <SportsMmaIcon />
+                              <Typography>Chải lông</Typography>
+                            </Grid>
+                            <Grid
+                              item
+                              xs={6}
+                              md={4}
+                              style={{ display: "flex" }}
+                            >
+                              <ShowerIcon />
+                              <Typography>Tắm rửa</Typography>
+                            </Grid>
+                            <Grid
+                              item
+                              xs={6}
+                              md={4}
+                              style={{ display: "flex" }}
+                            >
+                              <MedicationIcon />
+                              <Typography>Thuốc</Typography>
+                            </Grid>
+                            <Grid
+                              item
+                              xs={6}
+                              md={4}
+                              style={{ display: "flex" }}
+                            >
+                              <DoneAllIcon />
+                              <Typography>Nhật kí chăm sóc</Typography>
+                            </Grid>
+                            <Grid
+                              item
+                              xs={6}
+                              md={4}
+                              style={{ display: "flex" }}
+                            >
+                              <RestaurantIcon />
+                              <Typography>Thức ăn theo yêu cầu</Typography>
+                            </Grid>
+                            <Grid
+                              item
+                              xs={6}
+                              md={4}
+                              style={{ display: "flex" }}
+                            >
+                              <InvertColorsIcon />
+                              <Typography>Nguồn nước phù hợp</Typography>
+                            </Grid>
+                          </Grid>
+                        </Box>
+                      </Stack>
+                    </Card>
                   </Grid>
-                  <Grid xs={8} style={{ marginTop: "5px" }}>
-                    <img
-                      src={
-                        "https://cdn.batdongsan.com.vi/gpictures/500x250/3332/MnxBRjFRaXBNeFJKUXdPa0JKRlZUeENMV1RVZGZIOFJMYXdFNTdFeF9UdUl2NA.jpg"
-                      }
-                      alt="abc"
-                      height={100}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Box>
-            <Box>
-              <Grid style={{ marginTop: "20px" }} container spacing={3}>
-                <Grid item xs={12} md={8}>
-                  <Card sx={{ p: 3 }}>
-                    <Stack spacing={3}>
-                      <LabelStyle
-                        style={{
-                          color: "black",
-                          fontWeight: "bold",
-                          fontSize: "30px",
-                        }}
-                      >
-                        CLB Chim Cảnh {item.hostName}{" "}
-                      </LabelStyle>
-                      <Typography>
-                        Chào mừng bạn đã đến với CLB Chim Cảnh {item.hostName}{" "}
-                        trung tâm lưu trú chim cảnh sáng sủa và thoáng mát ở
-                        tầng trệt là nơi ở hoàn hảo cho để gửi gắm những chú
-                        chim cảnh của bạn
-                      </Typography>
 
-                      <LabelStyle
-                        style={{
-                          color: "black",
-                          fontWeight: "bold",
-                          fontSize: "20px",
-                        }}
-                      >
-                        Không Gian{" "}
-                      </LabelStyle>
-                      <Typography>
-                        Không gian nằm tại tầng trệt của ngôi nhà. Không gian
-                        rộng thoáng mát để chăm sóc và quản lý những chú chim.
-                      </Typography>
-
-                      <LabelStyle
-                        style={{
-                          color: "black",
-                          fontWeight: "bold",
-                          fontSize: "20px",
-                        }}
-                      >
-                        Lồng Chim
-                      </LabelStyle>
-                      <Typography>
-                        Chúng tôi có những lồng chim tốt chất lượng cao và có
-                        thể phù hợp theo từng loại chim
-                      </Typography>
-
-                      <LabelStyle
-                        style={{
-                          color: "black",
-                          fontWeight: "bold",
-                          fontSize: "20px",
-                        }}
-                      >
-                        Dịch Vụ
-                      </LabelStyle>
-                      <Box sx={{ flexGrow: 1 }}>
-                        <Grid container spacing={2}>
-                          <Grid item xs={6} md={4} style={{ display: "flex" }}>
-                            <SportsMmaIcon />
-                            <Typography>Chải lông</Typography>
-                          </Grid>
-                          <Grid item xs={6} md={4} style={{ display: "flex" }}>
-                            <ShowerIcon />
-                            <Typography>Tắm rửa</Typography>
-                          </Grid>
-                          <Grid item xs={6} md={4} style={{ display: "flex" }}>
-                            <MedicationIcon />
-                            <Typography>Thuốc</Typography>
-                          </Grid>
-                          <Grid item xs={6} md={4} style={{ display: "flex" }}>
-                            <DoneAllIcon />
-                            <Typography>Nhật kí chăm sóc</Typography>
-                          </Grid>
-                          <Grid item xs={6} md={4} style={{ display: "flex" }}>
-                            <RestaurantIcon />
-                            <Typography>Thức ăn theo yêu cầu</Typography>
-                          </Grid>
-                          <Grid item xs={6} md={4} style={{ display: "flex" }}>
-                            <InvertColorsIcon />
-                            <Typography>Nguồn nước phù hợp</Typography>
-                          </Grid>
-                        </Grid>
-                      </Box>
-                    </Stack>
-                  </Card>
-                </Grid>
-
-                <Grid item xs={12} md={4}>
-                  <form
-                    className="rounded bg-white p-10 shadow-sm"
-                    onSubmit={formik.handleSubmit}
-                    noValidate
-                  >
-                    <Stack spacing={3}>
+                  <Grid item xs={12} md={4}>
+                    <form
+                      className="rounded bg-white p-10 shadow-sm"
+                      onSubmit={handleSubmit}
+                      noValidate
+                    >
                       <Card sx={{ p: 3 }}>
                         <Box style={{ display: "flex" }}>
                           <Grid xs={8} style={{ display: "flex" }}>
@@ -385,28 +460,27 @@ export default function About() {
                         <FormControl
                           variant="outlined"
                           style={{ width: "100%" }}
-                          //error={error}
                         >
                           <InputLabel>Chọn Chim</InputLabel>
                           <Select
-                            onChange={(event) => {
-                              handleChange(event as any);
-                              const birdProfileId = event.target.value;
+                            onChange={(e) => {
+                              handleChange(e as any);
                               localStorage.setItem(
                                 "birdProfileId",
-                                birdProfileId as any
-                              ); // Save birdProfileId in localStorage
+                                options.find(
+                                  (item) => item.name === e.target.value
+                                )?.birdProfileId as any
+                              );
                             }}
                             style={{ width: "100%" }}
                             label="Chọn Chim"
                           >
                             {options.map((option) => (
                               <MenuItem
-                                key={option}
-                                value={option}
-                                // defaultValue là phần tử số 1 trong mảng options
+                                key={option.birdProfileId}
+                                value={option.name}
                               >
-                                {option}
+                                {option.name}
                               </MenuItem>
                             ))}
                           </Select>
@@ -415,27 +489,17 @@ export default function About() {
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DatePicker
                             label="Ngày bắt đầu"
-                            value={formik.values.dateStart}
+                            value={selectedDate}
                             onChange={(newValue) => {
-                              const date = new Date(newValue as any)
-                                .toLocaleDateString()
-                                .split("/");
-                              console.log("new", date);
-
-                              formik.setFieldValue(
-                                "dateStart",
-                                `${date[2]}-${date[0].padStart(
-                                  2,
-                                  "0"
-                                )}-${date[1].padStart(2, "0")}`
-                              );
+                              setSelectedDate(newValue);
 
                               // Update minDate for dateEnd
                               const newMinDate = new Date(newValue as any);
                               if (
-                                newMinDate > new Date(formik.values.dateEnd)
+                                selectedDateEnd &&
+                                newMinDate > selectedDateEnd
                               ) {
-                                formik.setFieldValue("dateEnd", newMinDate);
+                                setSelectedDateEnd(newMinDate);
                               }
                             }}
                             minDate={new Date()}
@@ -451,22 +515,11 @@ export default function About() {
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DatePicker
                             label="Ngày kết thúc"
-                            value={formik.values.dateEnd}
-                            onChange={(newValue) => {
-                              const date = new Date(newValue as any)
-                                .toLocaleDateString()
-                                .split("/");
-                              console.log("new", date);
-
-                              formik.setFieldValue(
-                                "dateEnd",
-                                `${date[2]}-${date[0].padStart(
-                                  2,
-                                  "0"
-                                )}-${date[1].padStart(2, "0")}`
-                              );
-                            }}
-                            minDate={formik.values.dateStart || new Date()}
+                            value={selectedDateEnd}
+                            onChange={(newValue) =>
+                              setSelectedDateEnd(newValue)
+                            }
+                            minDate={selectedDate || new Date()}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
@@ -524,12 +577,7 @@ export default function About() {
                           Đặt ngay
                         </Button>
                         <Divider style={{ marginTop: "40px" }} />
-                        <Box
-                          style={{
-                            display: "flex",
-                            marginTop: "20px",
-                          }}
-                        >
+                        <Box style={{ display: "flex", marginTop: "20px" }}>
                           <Box>
                             <Avatar
                               alt="Remy Sharp"
@@ -545,187 +593,136 @@ export default function About() {
                           </Box>
                         </Box>
                       </Card>
-                    </Stack>
-                  </form>
+                    </form>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Box>
-          </>
-        );
-      })}
-
-      <LabelStyle
-        style={{
-          color: "black",
-          fontWeight: "bold",
-          fontSize: "30px",
-          marginTop: "50px",
-          paddingLeft: "24px",
-        }}
-      >
-        Lịch Trống{" "}
-      </LabelStyle>
-
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <StaticDateRangePicker
-          displayStaticWrapperAs="desktop"
-          value={valueLichTrong}
-          onChange={(newValue) => {
-            setValueLichTrong(newValue);
+              </Box>
+            </>
+          );
+        })}
+        <LabelStyle
+          style={{
+            color: "black",
+            fontWeight: "bold",
+            fontSize: "30px",
+            marginTop: "50px",
+            paddingLeft: "24px",
           }}
-          renderInput={(startProps, endProps) => (
-            <React.Fragment>
-              <TextField {...startProps} />
-              <Box sx={{ mx: 2 }}> to </Box>
-              <TextField {...endProps} />
-            </React.Fragment>
-          )}
-        />
-      </LocalizationProvider>
+        >
+          Lịch Trống{" "}
+        </LabelStyle>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <StaticDateRangePicker
+            displayStaticWrapperAs="desktop"
+            value={valueLichTrong}
+            onChange={(newValue) => {
+              setValueLichTrong(newValue);
+            }}
+            renderInput={(startProps, endProps) => (
+              <React.Fragment>
+                <TextField {...startProps} />
+                <Box sx={{ mx: 2 }}> to </Box>
+                <TextField {...endProps} />
+              </React.Fragment>
+            )}
+          />
+        </LocalizationProvider>
+        <LabelStyle
+          style={{
+            color: "black",
+            fontWeight: "bold",
+            fontSize: "30px",
+            marginTop: "50px",
+            paddingLeft: "24px",
+          }}
+        >
+          Review{" "}
+        </LabelStyle>
 
-      <LabelStyle
-        style={{
-          color: "black",
-          fontWeight: "bold",
-          fontSize: "30px",
-          marginTop: "50px",
-          paddingLeft: "24px",
-        }}
-      >
-        Review{" "}
-      </LabelStyle>
-      <Box style={{ display: "flex" }}>
-        <Box style={{ color: "orange", paddingLeft: "24px" }}>
-          <StarIcon />
-          <StarIcon />
-          <StarIcon />
-          <StarIcon />
-          <StarIcon />
-        </Box>
-        <Box style={{ marginLeft: "10px" }}>
-          <Typography>Very Good 4.6/5</Typography>
-        </Box>
-      </Box>
-
-      <Grid container spacing={3} style={{ marginTop: "10px" }}>
-        <Grid item xs={12} md={8}>
-          <Card sx={{ p: 3 }}>
-            <Stack spacing={3}>
-              <Box
-                style={{
-                  display: "flex",
-                  marginTop: "20px",
-                }}
-              >
-                <Box>
-                  <Avatar
-                    alt="Van Teo"
-                    src="https://picsum.photos/200/300"
-                    sx={{ width: 56, height: 56 }}
-                  />
-                </Box>
-                <Box style={{ marginLeft: "15px" }}>
-                  <Typography style={{ fontWeight: "bold", fontSize: "20px" }}>
-                    Van Teo
+        <div>
+          {feedbacks.map((feedback: Feedback, index: number) => (
+            <Grid
+              key={index}
+              container
+              spacing={3}
+              style={{ marginTop: "10px" }}
+            >
+              <Grid item xs={12} md={8}>
+                <Card sx={{ p: 3 }} elevation={3}>
+                  <Stack spacing={3}>
+                    <Box
+                      style={{
+                        display: "flex",
+                        marginTop: "20px",
+                      }}
+                    >
+                      <Box>
+                        <img
+                          alt={feedback.customerName}
+                          src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                            feedback.customerName
+                          )}&background=random`}
+                          style={{ width: 56, height: 56, borderRadius: "50%" }}
+                        />
+                      </Box>
+                      <Box style={{ marginLeft: "15px" }}>
+                        <Typography
+                          style={{ fontWeight: "bold", fontSize: "20px" }}
+                        >
+                          {feedback.customerName}
+                        </Typography>
+                        <Box style={{ display: "flex" }}>
+                          <Box>
+                            <Typography
+                              style={{ color: "orange", fontSize: "10px" }}
+                            >
+                              {Array.from({ length: feedback.rating }).map(
+                                (_, i) => (
+                                  <StarIcon key={i} />
+                                )
+                              )}
+                            </Typography>
+                          </Box>
+                          <Box style={{ display: "flex", marginLeft: "50px" }}>
+                            <Typography>{`${feedback.rating}/5`}</Typography>
+                          </Box>
+                        </Box>
+                      </Box>
+                    </Box>
+                  </Stack>
+                  <Typography style={{ marginTop: "25px" }}>
+                    {feedback.feedback}
                   </Typography>
-                  <Box style={{ display: "flex" }}>
-                    <Box>
-                      <Typography style={{ color: "orange", fontSize: "10px" }}>
-                        <StarIcon />
-                        <StarIcon />
-                        <StarIcon />
-                        <StarIcon />
-                        <StarIcon />
-                      </Typography>
-                    </Box>
-                    <Box style={{ display: "flex", marginLeft: "50px" }}>
-                      <Typography>5/5</Typography>
-                      {/* <Typography style={{ marginLeft: "50px" }}>
-                        Stayted May 2021
-                      </Typography> */}
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
-            </Stack>
-            <Typography style={{ marginTop: "25x" }}>
-              Dịch vụ ổn, good
-            </Typography>
-          </Card>
-        </Grid>
-      </Grid>
-
-      <Grid container spacing={3} style={{ marginTop: "10px" }}>
-        <Grid item xs={12} md={8}>
-          <Card sx={{ p: 3 }}>
-            <Stack spacing={3}>
-              <Box
-                style={{
-                  display: "flex",
-                  marginTop: "20px",
-                }}
-              >
-                <Box>
-                  <Avatar
-                    alt="Remy Sharp"
-                    src="https://picsum.photos/200/300"
-                    sx={{ width: 56, height: 56 }}
-                  />
-                </Box>
-                <Box style={{ marginLeft: "15px" }}>
-                  {/* <Typography style={{ fontWeight: "bold", fontSize: "20px" }}>
-                    Van Teo
-                  </Typography> */}
-                  <Box style={{ display: "flex" }}>
-                    <Box>
-                      <Typography style={{ color: "orange", fontSize: "10px" }}>
-                        <StarIcon />
-                        <StarIcon />
-                        <StarIcon />
-                        <StarIcon />
-                        <StarIcon />
-                      </Typography>
-                    </Box>
-                    <Box style={{ display: "flex", marginLeft: "50px" }}>
-                      <Typography>5/5</Typography>
-                      {/* <Typography style={{ marginLeft: "50px" }}>
-                        Stayted May 2021
-                      </Typography> */}
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
-            </Stack>
-            <Typography style={{ marginTop: "25x" }}>
-              Chất lượng tốt nha mn
-            </Typography>
-          </Card>
-        </Grid>
-      </Grid>
-
-      <LabelStyle
-        style={{
-          color: "black",
-          fontWeight: "bold",
-          fontSize: "30px",
-          marginTop: "50px",
-          paddingLeft: "24px",
-        }}
-      >
-        Map{" "}
-      </LabelStyle>
-
-      <Iframe
-        url="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.906551778997!2d106.6566358147493!3d10.818463092292959!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529111aa89f9d%3A0xd8f09cc0aa1b27f3!2sTan%20Son%20Nhat%20International%20Airport!5e0!3m2!1sen!2s!4v1601785962230!5m2!1sen!2s"
-        width="1510px"
-        height="320px"
-        id=""
-        className=""
-        display="block"
-        position="relative"
-      />
-      <div style={{ marginTop: "20px" }}></div>
-      <Footer />
-    </Box>
+                </Card>
+              </Grid>
+            </Grid>
+          ))}
+        </div>
+        <LabelStyle
+          style={{
+            color: "black",
+            fontWeight: "bold",
+            fontSize: "30px",
+            marginTop: "50px",
+            paddingLeft: "24px",
+          }}
+        >
+          Map{" "}
+        </LabelStyle>
+        <Iframe
+          url="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.906551778997!2d106.6566358147493!3d10.818463092292959!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529111aa89f9d%3A0xd8f09cc0aa1b27f3!2sTan%20Son%20Nhat%20International%20Airport!5e0!3m2!1sen!2s!4v1601785962230!5m2!1sen!2s"
+          width="1510px"
+          height="320px"
+          id=""
+          className=""
+          display="block"
+          position="relative"
+        />
+        <div style={{ marginTop: "20px" }}></div>
+        <Footer />
+      </Box>
+    </>
   );
-}
+};
+
+export default memo(About);
