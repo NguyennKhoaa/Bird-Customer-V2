@@ -9,7 +9,7 @@ import { Box, CardActionArea, Modal } from "@mui/material";
 import logo from "../../images/luffy.jpg";
 import StarIcon from "@mui/icons-material/Star";
 import axios from "axios";
-
+import { BrowserRouter, Route, useNavigate } from "react-router-dom";
 interface Data {
   id: number;
   imageUrl: string;
@@ -26,6 +26,7 @@ interface ICarousel {
 }
 
 export default function CardCarousel(props: any) {
+  const navigate = useNavigate();
   const [data, setData] = useState<Data[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [selectedDetails, setSelectedDetails] = useState<Data | null>(null);
@@ -63,16 +64,8 @@ export default function CardCarousel(props: any) {
   };
 
   const handleCardClick = (id: number) => {
-    // Fetch details for the selected card using API call
-    axios({
-      method: "GET",
-      url: `https://swpbirdboardingv1.azurewebsites.net/api/Home/GetArticleDetail?id=${id}`,
-    })
-      .then((rs) => {
-        setSelectedDetails(rs.data.data[0]);
-        setSelectedId(id);
-      })
-      .catch();
+    navigate(`/article/${id}`);
+    // setSelectedId(id);
   };
 
   return (
@@ -155,11 +148,9 @@ export default function CardCarousel(props: any) {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             {selectedDetails?.title}
           </Typography>
-
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             {selectedDetails?.description}
           </Typography>
-          {/* {selectedDetails?.dateCreate} */}
         </Box>
       </Modal>
     </div>
