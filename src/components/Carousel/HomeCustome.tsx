@@ -42,6 +42,7 @@ const LabelStyle = styled(Typography)(() => ({
 }));
 
 const CustomActionBar = (props: PickersActionBarProps) => {
+  const navigate = useNavigate();
   const { onAccept, onClear, onCancel, onSetToday, actions } = props;
   const wrapperVariant = React.useContext(WrapperVariantContext);
   const localeText = useLocaleText();
@@ -340,16 +341,40 @@ export default function HomeCustome() {
       <div style={{ marginTop: "40px" }}></div>
       <GiamGia />
       <div style={{ marginTop: "40px" }}></div>
-      <LabelStyle
+      <div
         style={{
-          color: "black",
-          fontWeight: "bold",
-          fontSize: "30px",
-          marginLeft: "30px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        Nơi nổi bật{" "}
-      </LabelStyle>
+        <LabelStyle
+          style={{
+            color: "black",
+            fontWeight: "bold",
+            fontSize: "30px",
+            marginLeft: "30px",
+          }}
+        >
+          Nơi nổi bật{" "}
+        </LabelStyle>
+        <button
+          style={{
+            marginRight: "30px",
+            backgroundColor: "#4CAF50",
+            color: "white",
+            padding: "10px 20px",
+            borderRadius: "5px",
+            border: "none",
+            boxShadow: "2px 2px 5px rgba(0,0,0,0.3)",
+          }}
+          onClick={() => {
+            navigate("/article");
+          }}
+        >
+          Xem hết
+        </button>
+      </div>
       <div style={{ marginTop: "40px" }}>
         <CardCarousel />
       </div>

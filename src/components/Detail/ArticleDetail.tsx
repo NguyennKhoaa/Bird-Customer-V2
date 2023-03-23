@@ -47,10 +47,10 @@ const ArticleDetail = () => {
         container
         justifyContent="center"
         alignItems="center"
-        sx={{ height: "100vh" }}
+        sx={{ height: "100vh", width: "100vw" }}
       >
         <Grid item xs={12} sm={6}>
-          <Card sx={{ maxWidth: 800, width: "80%" }}>
+          <Card>
             <CardHeader
               avatar={<Avatar aria-label="author">H</Avatar>}
               title={
