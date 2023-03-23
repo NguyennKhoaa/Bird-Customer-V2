@@ -17,6 +17,7 @@ import Profile from "../Profile/Profile";
 import TableUser from "../Table/TableUser";
 import ToastContainerConfig from "../toast/ToastContainer";
 import VerifyCodePage from "../Login/VerifyCodePage";
+import ArticleDetail from "../Detail/ArticleDetail";
 
 const Router = (): JSX.Element => {
   return (
@@ -36,6 +37,7 @@ const Router = (): JSX.Element => {
       <Route path="/profile" element={<Profile />}></Route>
       <Route path="/profile/bird" element={<BirdProfile />}></Route>
       <Route path="/history" element={<HistoryBooking />}></Route>
+      <Route path="/article/:id" element={<ArticleDetail />}></Route>
       {/* <Route path="/taotaikhoan" element={<ProductNewForm />} /> */}
     </Routes>
     // </BrowserRouter>
