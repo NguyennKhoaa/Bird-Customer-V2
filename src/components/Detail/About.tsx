@@ -201,8 +201,8 @@ const About = () => {
 
   const birdProfileIdtest = localStorage.getItem("birdProfileId");
   const booking = {
-    dateStart: selectedDate?.toISOString().split("T")[0] || "",
-    dateEnd: selectedDateEnd?.toISOString().split("T")[0] || "",
+    dateStart: selectedDate,
+    dateEnd: selectedDateEnd,
     hostId: parseInt(localStorage.getItem("hostId") || "0", 10),
     accountId: parseInt(localStorage.getItem("accountId") || "0", 10),
     birdProfileId: parseInt(localStorage.getItem("birdProfileId") || "0", 10),
@@ -492,7 +492,7 @@ const About = () => {
                             value={selectedDate}
                             onChange={(newValue) => {
                               setSelectedDate(newValue);
-
+                              console.log("selectedDate", newValue);
                               // Update minDate for dateEnd
                               const newMinDate = new Date(newValue as any);
                               if (
